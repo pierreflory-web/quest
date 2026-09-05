@@ -91,12 +91,12 @@ function buildVille() {
 
   for (let y = 0; y < 60; y++) {
     for (let x = 29; x <= 31; x++) {
-      if (getGround(m, x, y) !== T.PAVE) { setGround(m, x, y, T.ROAD); }
+      if (getGround(m, x, y) !== T.PAVE) { setGround(m, x, y, T.PATH); }
     }
   }
   for (let x = 0; x < 60; x++) {
     for (let y = 29; y <= 31; y++) {
-      if (getGround(m, x, y) !== T.PAVE) { setGround(m, x, y, T.ROAD); }
+      if (getGround(m, x, y) !== T.PAVE) { setGround(m, x, y, T.PATH); }
     }
   }
   /* Une allée ne recouvre jamais la route lumineuse ni la place. */

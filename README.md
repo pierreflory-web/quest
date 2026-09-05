@@ -57,9 +57,9 @@ permanence votre position (point blanc) et les personnages qui ont du nouveau
 (points jaunes) ; un toucher l'agrandit en plein écran.
 La progression est sauvegardée automatiquement (localStorage).
 
-La ville est vivante et futuriste : routes à guidage lumineux, drones de livraison
-en vol, hologrammes publicitaires, robots humanoïdes (unités B-12, C-3, Z-9, K-7)
-en promenade, et un réseau d'allées qui relie tous les lieux au carrefour central.
+La ville est vivante et futuriste : drones de livraison en vol, hologrammes
+publicitaires, robots humanoïdes (unités B-12, C-3, Z-9, K-7) en promenade, et un
+réseau de chemins qui relie tous les lieux au carrefour central.
 Des dizaines d'objets sont examinables — bancs, statue des fondateurs, panneau
 « RECHERCHÉ », distributeurs, château de sable, barque échouée, feu de camp…
 Le Grand Centre abrite Gustave le vigile (qui peut confirmer l'alibi de Nadia),
