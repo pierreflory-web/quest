@@ -45,10 +45,19 @@ puis une page « Comment jouer » explique les commandes. Le carnet permet de
 recommencer l'enquête à tout moment.
 La progression est sauvegardée automatiquement (localStorage).
 
-La ville est vivante : des robots humanoïdes (unités B-12, C-3, Z-9, K-7) se
-promènent dans les rues, et des dizaines d'objets sont examinables — bancs, statue
-des fondateurs, panneau « RECHERCHÉ », distributeurs, château de sable, barque
-échouée, feu de camp, caddies, vitrines garnies…
+La ville est vivante et futuriste : routes à guidage lumineux, drones de livraison
+en vol, hologrammes publicitaires, robots humanoïdes (unités B-12, C-3, Z-9, K-7)
+en promenade, et un réseau d'allées qui relie tous les lieux au carrefour central.
+Des dizaines d'objets sont examinables — bancs, statue des fondateurs, panneau
+« RECHERCHÉ », distributeurs, château de sable, barque échouée, feu de camp…
+Le Grand Centre abrite Gustave le vigile (qui peut confirmer l'alibi de Nadia),
+un food court avec Vanille le robot glacier, une boutique de jouets, un photomaton,
+un plan holographique, un magasin au rideau de fer, une fontaine à vœux et une
+mosaïque monumentale. Dans la maison hantée, fantômes et squelettes s'animent.
+
+**Lisibilité des indices** : un « ! » jaune flotte au-dessus des personnages qui
+ont du nouveau à dire, une loupe cyan pulse sur les objets-indices pas encore
+examinés, et la bulle d'action affiche « Indice ! » devant eux.
 
 ## Structure du code
 

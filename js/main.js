@@ -1,6 +1,6 @@
 import { state, hasClue, addClue, flag, setFlag, save, load, hasSave, reset } from './state.js';
-import { CLUES, SUSPECTS, npcDialogue, objectDialogue, accusationResult, LOCKED_DOOR_MSG } from './data.js';
-import { TILE, buildWorld, mapCanvas, isSolid, zoneName } from './world.js';
+import { CLUES, SUSPECTS, npcDialogue, objectDialogue, accusationResult, LOCKED_DOOR_MSG, POI_CLUES, npcHasNews } from './data.js';
+import { TILE, buildWorld, mapCanvas, isSolid, zoneName, drawProp } from './world.js';
 import { input, initInput } from './input.js';
 import * as ui from './ui.js';
 
@@ -235,14 +235,85 @@ function draw(t) {
   actors.sort((a, b) => a.y - b.y);
   for (const a of actors) { drawActor(a, t); }
 
+  for (const mv of m.movers) { drawMover(mv, t); }
+
+  for (const n of m.npcs) {
+    if (npcHasNews(n.id)) { drawExclaim(n.x, n.y - 1.35, t); }
+  }
+  for (const o of m.interactables) {
+    const c = POI_CLUES[o.id];
+    if (c && !hasClue(c)) { drawClueMark(o.x, o.y - 0.5, t); }
+  }
+
   if (started && !ui.isBusy()) {
     const target = currentTarget();
     if (target) {
       const r = target.ref;
-      drawPrompt(r.x, r.y - (target.kind === 'npc' ? 1.4 : 0.9),
-        target.kind === 'npc' ? 'Parler' : 'Examiner');
+      let label = 'Examiner';
+      if (target.kind === 'npc') {
+        label = 'Parler';
+      } else if (POI_CLUES[r.id] && !hasClue(POI_CLUES[r.id])) {
+        label = 'Indice !';
+      }
+      drawPrompt(r.x, r.y - (target.kind === 'npc' ? 1.4 : 0.9), label);
     }
   }
+}
+
+function drawMover(mv, t) {
+  if (mv.type === 'drone') {
+    const dx = mv.cx + Math.cos(t * mv.sp + mv.ph) * mv.rx;
+    const dy = mv.cy + Math.sin(t * mv.sp * 0.8 + mv.ph) * mv.ry;
+    ctx.fillStyle = 'rgba(0,0,0,0.12)';
+    ctx.beginPath();
+    ctx.ellipse(dx * TILE, dy * TILE + 46, 12, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    drawProp(ctx, { type: 'drone', x: dx - 0.5, y: dy - 0.5, blink: Math.sin(t * 6 + mv.ph) > 0 });
+  } else if (mv.type === 'ghost') {
+    const gx = mv.x0 + Math.sin(t * mv.sp + mv.ph) * mv.ax;
+    const gy = mv.y0 + Math.sin(t * mv.sp * 1.7 + mv.ph) * mv.ay;
+    ctx.globalAlpha = 0.65 + Math.sin(t * 2 + mv.ph) * 0.3;
+    drawProp(ctx, { type: 'ghost', x: gx, y: gy });
+    ctx.globalAlpha = 1;
+  } else if (mv.type === 'skeleton') {
+    const sx = mv.x0 + Math.sin(t * 3 + mv.ph) * 0.14;
+    const sy = mv.y0 - Math.abs(Math.sin(t * 5 + mv.ph)) * 0.12;
+    drawProp(ctx, { type: 'skeleton', x: sx, y: sy });
+  }
+}
+
+function drawExclaim(tx, ty, t) {
+  const x = tx * TILE;
+  const y = ty * TILE + Math.sin(t * 3.2) * 2.5;
+  ctx.fillStyle = '#f7d418';
+  ctx.strokeStyle = '#101830';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.arc(x, y, 8, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#101830';
+  ctx.font = 'bold 12px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('!', x, y + 0.5);
+  ctx.textBaseline = 'alphabetic';
+}
+
+function drawClueMark(tx, ty, t) {
+  const x = tx * TILE;
+  const y = ty * TILE + Math.sin(t * 3.2 + 1.5) * 2.5;
+  const pulse = 0.55 + Math.sin(t * 4) * 0.25;
+  ctx.strokeStyle = `rgba(72,220,255,${pulse})`;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(x, y, 10 + Math.sin(t * 4) * 2, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.font = '13px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('🔍', x, y);
+  ctx.textBaseline = 'alphabetic';
 }
 
 function drawActor(a, t) {

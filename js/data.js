@@ -29,6 +29,10 @@ export const CLUES = {
     title: 'Facture de bâche',
     desc: "Nadia a vendu une immense bâche grise à Victor la semaine dernière. « Pour l'humidité », prétendait-il.",
   },
+  alibi: {
+    title: 'Alibi de Nadia',
+    desc: 'Gustave, le vigile du Grand Centre, confirme : Nadia a passé toute la nuit du vol à l’inventaire, badge pointé de 22 h à 6 h. Elle est hors de cause.',
+  },
   robot: {
     title: 'NOVA-7 retrouvé',
     desc: 'Le robot volé est caché sous une bâche dans la maison hantée de Victor. Ses diodes clignotent doucement : il est intact.',
@@ -83,6 +87,7 @@ export function npcDialogue(id) {
           p('Directeur Mercier', 'Le voleur a aussi emporté sa caisse de transport, la grande, celle à roulettes. Il savait exactement où chercher.'),
           p('Directeur Mercier', "Fouillez l'usine, détective. Et interrogez Ray, le gardien de nuit… il était censé veiller."),
         ],
+        flagSet: 'vuMercier',
       };
     }
 
@@ -209,6 +214,37 @@ export function npcDialogue(id) {
       };
     }
 
+    case 'gustave': {
+      if (hasClue('bache') && !hasClue('alibi')) {
+        return {
+          lines: [
+            p('Gustave', 'Vigile du Grand Centre, pour vous servir. Trente-deux caméras, et moi.'),
+            p('Gustave', "Nadia ? La nuit du vol, elle était à l'inventaire. Badge pointé à 22 h, ressortie à 6 h. Personne ne quitte le centre sans que je le sache."),
+            p('Gustave', 'Si vous cherchez votre voleur, il n’est pas ici, détective.'),
+          ],
+          clue: 'alibi',
+        };
+      }
+      if (hasClue('alibi')) {
+        return { lines: [p('Gustave', 'L’alibi de Nadia est en béton, je vous le confirme. Bonne chasse, détective.')] };
+      }
+      return {
+        lines: [
+          p('Gustave', 'Vigile du Grand Centre, pour vous servir. Trente-deux caméras, et moi. Rien ne m’échappe.'),
+          p('Gustave', 'Le vol de l’usine ? Triste affaire. Ici en tout cas, la nuit a été calme.'),
+        ],
+      };
+    }
+
+    case 'vanille': {
+      return {
+        lines: [
+          p('Vanille', 'Bip. Glaces ! Vanille-nébuleuse, chocolat-comète ou sorbet plasma. Servies à −18,000 degrés précisément.'),
+          p('Vanille', 'Les affaires sont calmes depuis le vol… les clients ont peur. Retrouvez le coupable, détective, bip.'),
+        ],
+      };
+    }
+
     case 'faucon': {
       const lines = [
         p('Faucon', 'Bip. Tir à l’arc ! Trois flèches pour un crédit. Mes capteurs mesurent le vent au millimètre près.'),
@@ -316,6 +352,22 @@ export function objectDialogue(id) {
       return n('Un caddie abandonné au milieu de l’allée. Ses roues grincent… mais pas comme celles de la caisse volée.');
     case 'confiserie':
       return n('Le stand de barbe à papa. Des nuages roses tournent doucement derrière la vitre. Ça sent le sucre chaud.');
+    case 'glaces':
+      return n('Le stand de glaces du food court. Le congélateur chantonne une berceuse en binaire.');
+    case 'table':
+      return n('Une table du food court. Quelqu’un a gravé « R + N » dans le plastique. Tiens, tiens.');
+    case 'jouets':
+      return n('La vitrine du magasin de jouets : des mini-robots dansent en boucle. L’un d’eux ressemble beaucoup à NOVA-7.');
+    case 'photomaton':
+      return n('Un photomaton. L’écran propose un filtre « détective ». Vous résistez héroïquement.');
+    case 'plan':
+      return n('Le plan holographique du centre : boutiques, food court, fontaine à vœux… et une sortie de service côté ouest.');
+    case 'rideau':
+      return n('Un magasin fermé par un rideau de fer poussiéreux. « Réouverture bientôt », promet l’affiche. Depuis longtemps, visiblement.');
+    case 'mosaique':
+      return n('Une grande mosaïque incrustée dans le sol : des tesselles cyan et or dessinent la ville de Quest, ses robots et son usine. Magnifique.');
+    case 'voeux':
+      return n('La fontaine à vœux du Grand Centre. Vous lancez une pièce : « Que l’enquête aboutisse. » Ploc.');
     case 'fantome':
       return n('Un faux fantôme pendu au plafond. Il fait moins peur de près.');
     case 'caisse':
@@ -326,6 +378,39 @@ export function objectDialogue(id) {
 }
 
 export const LOCKED_DOOR_MSG = 'La maison hantée est verrouillée. Victor n’ouvrira que si vous le confondez avec des preuves solides…';
+
+/** Objets examinables qui rapportent un indice (pour les marqueurs à l'écran). */
+export const POI_CLUES = {
+  sable: 'sable',
+  ticket: 'ticket',
+  roulettes: 'roulettes',
+  bacheRobot: 'robot',
+};
+
+/** Un personnage a-t-il du nouveau à dire (marqueur « ! » au-dessus de la tête) ? */
+export function npcHasNews(id) {
+  const piste = hasClue('roulettes') || hasClue('ray') || hasClue('marcus');
+  switch (id) {
+    case 'pixel':
+      return !flag('mission') || (hasClue('robot') && !state.solved);
+    case 'mercier':
+      return flag('mission') && !flag('vuMercier');
+    case 'ray':
+      return flag('mission') && !hasClue('ray');
+    case 'marcus':
+      return flag('mission') && !hasClue('marcus');
+    case 'grillon':
+      return piste && !hasClue('grillon');
+    case 'nadia':
+      return (piste || hasClue('grillon')) && !hasClue('bache');
+    case 'victor':
+      return hasClue('grillon') && hasClue('bache') && !flag('aveux');
+    case 'gustave':
+      return hasClue('bache') && !hasClue('alibi');
+    default:
+      return false;
+  }
+}
 
 export function accusationResult(id) {
   switch (id) {

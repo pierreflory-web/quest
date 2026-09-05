@@ -9,6 +9,7 @@ export const T = {
   WALL: 5,
   DARK: 6,
   MALL: 7,
+  ROAD: 8,
 };
 
 function mulberry32(seed) {
@@ -30,6 +31,7 @@ function makeMap(id, w, h, seed) {
     npcs: [],
     interactables: [],
     portals: [],
+    movers: [],
     _canvas: null,
   };
 }
@@ -88,15 +90,26 @@ function buildVille() {
 
   for (let y = 0; y < 60; y++) {
     for (let x = 29; x <= 31; x++) {
-      if (getGround(m, x, y) !== T.PAVE) { setGround(m, x, y, T.PATH); }
+      if (getGround(m, x, y) !== T.PAVE) { setGround(m, x, y, T.ROAD); }
     }
   }
   for (let x = 0; x < 60; x++) {
     for (let y = 29; y <= 31; y++) {
-      if (getGround(m, x, y) !== T.PAVE) { setGround(m, x, y, T.PATH); }
+      if (getGround(m, x, y) !== T.PAVE) { setGround(m, x, y, T.ROAD); }
     }
   }
   for (let x = 3; x <= 56; x++) { setGround(m, x, 8, T.PATH); }
+
+  /* Réseau d'allées : chaque lieu rejoint le carrefour central. */
+  for (let y = 2; y <= 8; y++) { setGround(m, 12, y, T.PATH); setGround(m, 45, y, T.PATH); }
+  for (let y = 16; y <= 28; y++) { setGround(m, 15, y, T.PATH); }
+  for (let y = 25; y <= 28; y++) { setGround(m, 8, y, T.PATH); }
+  for (let y = 31; y <= 44; y++) { setGround(m, 12, y, T.PATH); }
+  for (let x = 13; x <= 17; x++) { setGround(m, x, 34, T.PATH); }
+  for (let x = 5; x <= 11; x++) { setGround(m, x, 38, T.PATH); }
+  for (let x = 5; x <= 12; x++) { setGround(m, x, 44, T.PATH); }
+  for (let x = 32; x <= 35; x++) { setGround(m, x, 50, T.PATH); }
+  for (let x = 26; x <= 29; x++) { setGround(m, x, 53, T.PATH); }
 
   for (let i = 0; i < 60; i++) {
     setSolid(m, i, 0); setSolid(m, i, 59); setSolid(m, 0, i); setSolid(m, 59, i);
@@ -232,6 +245,34 @@ function buildVille() {
   prop(m, 'cart', 53, 33); setSolid(m, 53, 33);
   poi(m, 'caddie', 53.5, 34.2, 1.3);
 
+  prop(m, 'stand', 55, 28, { label: 'GLACES', icon: 'glace', awning: '#48a8dc' });
+  solidRect(m, 55, 28, 56, 28);
+  poi(m, 'glaces', 57.2, 28.8, 1.1);
+  prop(m, 'table', 54, 32); setSolid(m, 54, 32);
+  prop(m, 'table', 56, 33); setSolid(m, 56, 33);
+  poi(m, 'table', 54.5, 33.2, 1.3);
+
+  prop(m, 'toywindow', 50, 19, { w: 2 });
+  solidRect(m, 50, 19, 51, 19);
+  poi(m, 'jouets', 51, 20.4, 1.4);
+  prop(m, 'photomaton', 45, 34); setSolid(m, 45, 34);
+  poi(m, 'photomaton', 45.5, 35.2, 1.2);
+  prop(m, 'planboard', 45, 27); setSolid(m, 45, 27);
+  poi(m, 'plan', 45.5, 28.2, 1.2);
+  prop(m, 'rideau', 49, 41, { w: 3 });
+  solidRect(m, 49, 41, 51, 41);
+  poi(m, 'rideau', 50, 40.2, 1.3);
+
+  prop(m, 'mosaic', 50.5, 30.3);
+  poi(m, 'mosaique', 50.5, 30.3, 1.5);
+  prop(m, 'fontaine', 49, 32);
+  solidRect(m, 49, 32, 50, 33);
+  poi(m, 'voeux', 50, 34.4, 1.6);
+
+  prop(m, 'holo', 48, 24, { txt: 'PROMO', hue: 190 });
+  prop(m, 'holo', 53, 29, { txt: '-50%', hue: 320 });
+  prop(m, 'holo', 50, 37, { txt: 'NOUVEAU', hue: 55 });
+
   /* --- Sud : quartier des sables --- */
   for (let i = 0; i < 16; i++) {
     const x = 2 + Math.floor(rng() * 56);
@@ -275,6 +316,15 @@ function buildVille() {
   npc(m, 'praline', 'Praline', 13.5, 39.2, { body: '#d66a9e', skin: '#9aa6b6', robot: true, r: 2.3 });
   npc(m, 'victor', 'Victor', 10.5, 26.5, { body: '#7c3aed', skin: '#f2c9a0', hat: 'top' });
   npc(m, 'nadia', 'Nadia', 51.5, 30.5, { body: '#e0447c', skin: '#c98d63' });
+  npc(m, 'gustave', 'Gustave', 47.5, 32.5, { body: '#37415c', skin: '#e8b48c', hat: 'cap' });
+  npc(m, 'vanille', 'Vanille', 55.5, 27.2, { body: '#e8e2d4', skin: '#9aa6b6', robot: true, r: 2.3 });
+  m.movers.push(
+    { type: 'drone', cx: 30, cy: 16, rx: 14, ry: 3, sp: 0.25, ph: 0 },
+    { type: 'drone', cx: 14, cy: 40, rx: 9, ry: 5, sp: 0.2, ph: 2.1 },
+    { type: 'drone', cx: 46, cy: 11, rx: 9, ry: 4, sp: 0.3, ph: 4.2 },
+    { type: 'drone', cx: 40, cy: 50, rx: 12, ry: 4, sp: 0.22, ph: 1.3 },
+  );
+
   npc(m, 'b12', 'Unité B-12', 27.5, 37.5, { body: '#c0c8d4', skin: '#9aa6b6', robot: true, wander: true });
   npc(m, 'c3', 'Unité C-3', 20.5, 8.5, { body: '#aab8d0', skin: '#8e9cb4', robot: true, wander: true });
   npc(m, 'z9', 'Unité Z-9', 50.5, 27.5, { body: '#d4c8b0', skin: '#a8a090', robot: true, wander: true });
@@ -340,9 +390,14 @@ function buildHante() {
   solidRect(m, 7, 3, 9, 4);
   poi(m, 'bacheRobot', 8.5, 5.4, 1.6);
 
-  prop(m, 'ghost', 3, 2); prop(m, 'ghost', 13, 2); prop(m, 'ghost', 12, 6);
-  prop(m, 'skeleton', 2, 6); prop(m, 'skeleton', 14, 4);
-  poi(m, 'fantome', 3.5, 3.4, 1.4);
+  m.movers.push(
+    { type: 'ghost', x0: 3, y0: 2, ax: 1.1, ay: 0.5, sp: 0.9, ph: 0 },
+    { type: 'ghost', x0: 13, y0: 2, ax: 1.4, ay: 0.4, sp: 0.7, ph: 2.4 },
+    { type: 'ghost', x0: 12, y0: 6, ax: 0.9, ay: 0.6, sp: 1.1, ph: 4.1 },
+    { type: 'skeleton', x0: 2, y0: 6, ph: 0.5 },
+    { type: 'skeleton', x0: 14, y0: 4, ph: 2.2 },
+  );
+  poi(m, 'fantome', 3.5, 3.4, 1.6);
   prop(m, 'cratewheels', 3, 8);
   solidRect(m, 3, 8, 4, 9);
   poi(m, 'caisse', 4.5, 8.5, 1.6);
@@ -365,6 +420,7 @@ const TILE_COLORS = {
   [T.WALL]: ['#3c4457', '#3c4457'],
   [T.DARK]: ['#2c2540', '#282039'],
   [T.MALL]: ['#cfd6e4', '#c4ccdc'],
+  [T.ROAD]: ['#3a4254', '#3a4254'],
 };
 
 export function mapCanvas(m) {
@@ -378,8 +434,7 @@ export function mapCanvas(m) {
   for (let y = 0; y < m.h; y++) {
     for (let x = 0; x < m.w; x++) {
       const t = getGround(m, x, y);
-      const colors = TILE_COLORS[t];
-      g.fillStyle = colors[(x + y) % 2];
+      g.fillStyle = TILE_COLORS[t][0];
       g.fillRect(x * TILE, y * TILE, TILE, TILE);
       const r = rng();
       if (t === T.GRASS && r < 0.25) {
@@ -388,9 +443,27 @@ export function mapCanvas(m) {
       } else if (t === T.SAND && r < 0.3) {
         g.fillStyle = 'rgba(120,90,40,0.18)';
         g.fillRect(x * TILE + (r * 100) % 24, y * TILE + (r * 53) % 24, 4, 2);
-      } else if ((t === T.PAVE || t === T.MALL || t === T.FLOOR)) {
-        g.strokeStyle = 'rgba(0,0,0,0.07)';
-        g.strokeRect(x * TILE + 0.5, y * TILE + 0.5, TILE, TILE);
+      } else if (t === T.ROAD) {
+        g.fillStyle = 'rgba(72,220,255,0.5)';
+        if (x === 30) { g.fillRect(x * TILE + 14, y * TILE + 4, 4, 12); }
+        if (y === 30) { g.fillRect(x * TILE + 4, y * TILE + 14, 12, 4); }
+        g.fillStyle = 'rgba(72,220,255,0.22)';
+        if (x === 29 && getGround(m, x - 1, y) !== T.ROAD) { g.fillRect(x * TILE, y * TILE, 3, TILE); }
+        if (x === 31 && getGround(m, x + 1, y) !== T.ROAD) { g.fillRect(x * TILE + TILE - 3, y * TILE, 3, TILE); }
+        if (y === 29 && getGround(m, x, y - 1) !== T.ROAD) { g.fillRect(x * TILE, y * TILE, TILE, 3); }
+        if (y === 31 && getGround(m, x, y + 1) !== T.ROAD) { g.fillRect(x * TILE, y * TILE + TILE - 3, TILE, 3); }
+      } else if (t === T.PAVE && r < 0.07) {
+        g.strokeStyle = 'rgba(72,220,255,0.28)';
+        g.lineWidth = 1.5;
+        g.beginPath();
+        const cx = x * TILE + 6 + (r * 200) % 12;
+        const cy = y * TILE + 6 + (r * 130) % 12;
+        g.moveTo(cx, cy);
+        g.lineTo(cx + 10, cy);
+        g.lineTo(cx + 10, cy + 8);
+        g.stroke();
+        g.fillStyle = 'rgba(72,220,255,0.5)';
+        g.fillRect(cx + 9, cy + 8, 3, 3);
       }
       if (t === T.WALL) {
         g.fillStyle = '#2a3040';
@@ -414,7 +487,7 @@ export function mapCanvas(m) {
 
 function px(v) { return v * TILE; }
 
-function drawProp(g, p, rng) {
+export function drawProp(g, p, rng) {
   const x = px(p.x), y = px(p.y);
   switch (p.type) {
     case 'tree': {
@@ -554,14 +627,26 @@ function drawProp(g, p, rng) {
       break;
     }
     case 'stand': {
-      const awning = p.pink ? '#e04ba0' : '#e04444';
+      const awning = p.awning || (p.pink ? '#e04ba0' : '#e04444');
       g.fillStyle = '#8a5a30';
       g.fillRect(x + 2, y + 10, 60, 20);
       for (let i = 0; i < 8; i++) {
         g.fillStyle = i % 2 ? awning : '#f5f0e6';
         g.fillRect(x + i * 8, y, 8, 10);
       }
-      if (p.pink) {
+      if (p.icon === 'glace') {
+        g.fillStyle = '#e5c46a';
+        g.beginPath();
+        g.moveTo(x + 28, y + 20); g.lineTo(x + 36, y + 20); g.lineTo(x + 32, y + 30);
+        g.closePath();
+        g.fill();
+        g.fillStyle = '#fdf6ec';
+        circle(g, x + 30, y + 17, 4.5);
+        g.fillStyle = '#f7b8dd';
+        circle(g, x + 35, y + 17, 4.5);
+        g.fillStyle = '#7a4a2e';
+        circle(g, x + 32, y + 13, 4.5);
+      } else if (p.pink) {
         g.fillStyle = '#f7b8dd';
         circle(g, x + 32, y + 17, 7);
         circle(g, x + 27, y + 20, 5);
@@ -661,6 +746,18 @@ function drawProp(g, p, rng) {
       g.font = 'bold 26px sans-serif';
       g.textAlign = 'center';
       g.fillText('ROBOCORP', x + w / 2, y + 30);
+      g.strokeStyle = '#8894a8';
+      g.lineWidth = 3;
+      g.beginPath();
+      g.moveTo(x + 30, y); g.lineTo(x + 30, y - 22);
+      g.moveTo(x + w - 30, y); g.lineTo(x + w - 30, y - 14);
+      g.stroke();
+      g.fillStyle = '#ff5d73';
+      circle(g, x + 30, y - 24, 3);
+      g.fillStyle = '#48dcff';
+      circle(g, x + w - 30, y - 16, 3);
+      g.fillStyle = '#8894a8';
+      ellipse(g, x + w - 60, y + 4, 10, 4);
       g.fillStyle = '#1e2536';
       g.fillRect(px(p.door), y + h - 30, TILE, 30);
       g.fillStyle = '#48dcff';
@@ -814,6 +911,149 @@ function drawProp(g, p, rng) {
       g.fillStyle = '#241c38';
       circle(g, x + 14, y + 6, 1.6);
       circle(g, x + 18, y + 6, 1.6);
+      break;
+    }
+    case 'table': {
+      g.fillStyle = '#8a94a8';
+      g.fillRect(x + 14, y + 12, 4, 14);
+      g.fillStyle = '#c3ccd9';
+      ellipse(g, x + 16, y + 12, 12, 7);
+      g.fillStyle = '#7c86a0';
+      g.fillRect(x - 2, y + 14, 7, 7);
+      g.fillRect(x + 27, y + 14, 7, 7);
+      break;
+    }
+    case 'toywindow': {
+      const w = (p.w || 2) * TILE;
+      g.fillStyle = '#5a4a7c';
+      g.fillRect(x, y, w, 26);
+      g.fillStyle = 'rgba(160,220,255,0.35)';
+      g.fillRect(x + 4, y + 4, w - 8, 18);
+      for (let i = 0; i < 3; i++) {
+        const rx = x + 10 + i * 18;
+        g.fillStyle = ['#48dcff', '#ff5d73', '#f7d418'][i];
+        g.fillRect(rx, y + 12, 8, 8);
+        circle(g, rx + 4, y + 9, 4);
+        g.fillStyle = '#101830';
+        g.fillRect(rx + 2, y + 8, 2, 2);
+        g.fillRect(rx + 5, y + 8, 2, 2);
+      }
+      g.fillStyle = '#f7d418';
+      g.font = 'bold 8px sans-serif';
+      g.textAlign = 'center';
+      g.fillText('JOUETS', x + w / 2, y + 33);
+      break;
+    }
+    case 'photomaton': {
+      g.fillStyle = '#1e3a5c';
+      g.fillRect(x + 2, y - 8, 28, 38);
+      g.fillStyle = '#e04444';
+      for (let i = 0; i < 4; i++) {
+        g.fillRect(x + 5 + i * 6, y + 6, 4, 22);
+      }
+      g.fillStyle = '#48dcff';
+      circle(g, x + 16, y - 2, 5);
+      g.fillStyle = '#f5f0e6';
+      g.font = 'bold 7px sans-serif';
+      g.textAlign = 'center';
+      g.fillText('PHOTO', x + 16, y + 36);
+      break;
+    }
+    case 'planboard': {
+      g.fillStyle = '#3c4457';
+      g.fillRect(x + 14, y + 14, 4, 16);
+      g.fillStyle = '#101830';
+      g.fillRect(x + 2, y - 6, 28, 22);
+      g.strokeStyle = 'rgba(72,220,255,0.9)';
+      g.lineWidth = 1.5;
+      g.strokeRect(x + 3, y - 5, 26, 20);
+      g.fillStyle = 'rgba(72,220,255,0.7)';
+      g.fillRect(x + 6, y - 2, 8, 5);
+      g.fillRect(x + 17, y - 2, 9, 4);
+      g.fillRect(x + 6, y + 6, 6, 6);
+      g.fillStyle = '#ff5d73';
+      circle(g, x + 21, y + 9, 2.5);
+      break;
+    }
+    case 'rideau': {
+      const w = (p.w || 3) * TILE;
+      g.fillStyle = '#6d7488';
+      g.fillRect(x, y - 4, w, 32);
+      g.strokeStyle = '#525a6e';
+      g.lineWidth = 2;
+      g.beginPath();
+      for (let i = 1; i < w / 6; i++) {
+        g.moveTo(x + i * 6, y - 4);
+        g.lineTo(x + i * 6, y + 28);
+      }
+      g.stroke();
+      g.fillStyle = '#c9b389';
+      g.fillRect(x + w / 2 - 18, y + 4, 36, 12);
+      g.fillStyle = '#3c2a18';
+      g.font = 'bold 7px sans-serif';
+      g.textAlign = 'center';
+      g.fillText('RÉOUVERTURE', x + w / 2, y + 12);
+      break;
+    }
+    case 'mosaic': {
+      const cx = x, cy = y;
+      const palette = ['#48dcff', '#c9a13f', '#7c3aed', '#e8ecf5', '#2f6fed'];
+      for (let ring = 0; ring < 4; ring++) {
+        const rr = 12 + ring * 13;
+        const count = 8 + ring * 6;
+        for (let i = 0; i < count; i++) {
+          const a = (i / count) * Math.PI * 2 + ring * 0.3;
+          g.save();
+          g.translate(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr);
+          g.rotate(a);
+          g.fillStyle = palette[(i + ring) % palette.length];
+          g.globalAlpha = 0.8;
+          g.fillRect(-5, -4, 10, 8);
+          g.restore();
+        }
+      }
+      g.globalAlpha = 1;
+      g.fillStyle = '#c9a13f';
+      circle(g, cx, cy, 9);
+      g.fillStyle = '#101830';
+      circle(g, cx, cy, 5);
+      g.fillStyle = '#48dcff';
+      circle(g, cx, cy, 2.5);
+      break;
+    }
+    case 'drone': {
+      g.fillStyle = '#556078';
+      for (const [dx, dy] of [[2, 4], [26, 4], [2, 22], [26, 22]]) {
+        ellipse(g, x + dx + 2, y + dy, 7, 2.5);
+      }
+      g.strokeStyle = '#3c4457';
+      g.lineWidth = 2;
+      g.beginPath();
+      g.moveTo(x + 6, y + 6); g.lineTo(x + 26, y + 22);
+      g.moveTo(x + 26, y + 6); g.lineTo(x + 6, y + 22);
+      g.stroke();
+      g.fillStyle = '#2c3446';
+      g.fillRect(x + 10, y + 9, 12, 10);
+      g.fillStyle = '#48dcff';
+      g.fillRect(x + 13, y + 12, 6, 4);
+      if (p.blink) {
+        g.fillStyle = '#ff5d73';
+        circle(g, x + 16, y + 7, 2.5);
+      }
+      break;
+    }
+    case 'holo': {
+      g.fillStyle = 'rgba(0,0,0,0.15)';
+      ellipse(g, x + 16, y + 28, 10, 3);
+      g.fillStyle = `hsl(${p.hue} 85% 60% / 0.28)`;
+      g.fillRect(x - 6, y - 14, 44, 20);
+      g.strokeStyle = `hsl(${p.hue} 85% 65% / 0.9)`;
+      g.lineWidth = 1.5;
+      g.strokeRect(x - 6, y - 14, 44, 20);
+      g.fillStyle = `hsl(${p.hue} 90% 75%)`;
+      g.font = 'bold 10px sans-serif';
+      g.textAlign = 'center';
+      g.fillText(p.txt, x + 16, y - 1);
       break;
     }
     case 'bench': {
