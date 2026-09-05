@@ -451,12 +451,21 @@ export function npcHasNews(id) {
 }
 
 export function accusationResult(id) {
+  if (state.clues.length < 3) {
+    return { lines: [p('Agent Pixel', 'Doucement, détective ! Votre carnet est presque vide. Enquêtez d’abord : la scène du crime vous attend dans l’usine. On accuse ensuite.')] };
+  }
   switch (id) {
     case 'victor':
       if (hasClue('robot')) {
         return { win: true };
       }
-      return { lines: [p('Agent Pixel', 'Victor ? Possible… mais sans NOVA-7, il niera tout en bloc. Retrouvez d’abord le robot, détective !')] };
+      if (flag('aveux')) {
+        return { lines: [p('Agent Pixel', 'Victor a avoué ?! Alors il ne manque que le corps du délit. Entrez dans la maison hantée et retrouvez NOVA-7 : avec le robot, son compte est bon.')] };
+      }
+      if (hasClue('grillon')) {
+        return { lines: [p('Agent Pixel', 'Le témoignage de Grillon l’accable… mais Victor niera tout en bloc. Trouvez de quoi le confondre en face, puis revenez me voir.')] };
+      }
+      return { lines: [p('Agent Pixel', 'Victor, le forain ? Peut-être… mais rien dans votre carnet ne le relie au vol pour l’instant. Continuez à creuser.')] };
     case 'marcus':
       return { lines: [p('Agent Pixel', 'Marcus ? Il traînait dehors cette nuit, c’est vrai… mais observer n’est pas voler. Et il n’aurait jamais pu ouvrir la vitrine.')] };
     case 'nadia':
