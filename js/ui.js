@@ -1,5 +1,5 @@
 import { state, reset } from './state.js';
-import { CLUES, SUSPECTS, WIN_TEXT } from './data.js';
+import { CLUES, SUSPECTS, WIN_TEXT, nextHint } from './data.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -245,6 +245,10 @@ export function setZoneName(name) {
 export function initUi() {
   $('btn-notebook').addEventListener('click', toggleNotebook);
   $('btn-close-notebook').addEventListener('click', toggleNotebook);
+  $('btn-hint').addEventListener('click', () => {
+    toggleNotebook();
+    showDialogue([{ who: 'Votre instinct', text: nextHint() }], null);
+  });
   $('btn-restart').addEventListener('click', () => {
     toggleNotebook();
     showChoices('Recommencer l’enquête ?', [

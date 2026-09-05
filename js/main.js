@@ -408,6 +408,7 @@ function drawActor(a, t) {
     ctx.fillStyle = '#1e2536';
     ctx.fillRect(x - 4, y - 14, 3, 3);
     ctx.fillRect(x + 1, y - 14, 3, 3);
+    ctx.fillRect(x - 3, y - 9, 6, 2);
     ctx.strokeStyle = '#9aa6b6';
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -424,6 +425,11 @@ function drawActor(a, t) {
     ctx.arc(x - 3, y - 13, 1.6, 0, Math.PI * 2);
     ctx.arc(x + 3, y - 13, 1.6, 0, Math.PI * 2);
     ctx.fill();
+    ctx.strokeStyle = '#8a4a3a';
+    ctx.lineWidth = 1.3;
+    ctx.beginPath();
+    ctx.arc(x, y - 10.5, 3, Math.PI * 0.2, Math.PI * 0.8);
+    ctx.stroke();
   }
 
   if (a.hat === 'detective') {

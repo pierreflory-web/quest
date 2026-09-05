@@ -391,6 +391,38 @@ export const POI_CLUES = {
   bacheRobot: 'robot',
 };
 
+/** Conseil à la demande : la prochaine étape logique de l'enquête. */
+export function nextHint() {
+  if (state.solved) {
+    return 'L’affaire est classée ! Promenez-vous, Quest regorge de recoins à explorer.';
+  }
+  if (!flag('mission')) {
+    return 'Commencez par parler à l’agent Pixel, devant l’usine RoboCorp, au centre de la ville.';
+  }
+  if (!hasClue('sable') || !hasClue('ticket') || !hasClue('roulettes')) {
+    return 'Fouillez la scène du crime dans l’usine : examinez tout ce qui entoure le socle vide (une loupe cyan signale les indices).';
+  }
+  if (!hasClue('ray')) {
+    return 'Le gardien de nuit de l’usine était de service. Il a bien dû entendre quelque chose…';
+  }
+  if (!hasClue('marcus')) {
+    return 'Du sable au pied du socle… Quelqu’un vit dans le quartier des sables, au sud, et rôde la nuit. Allez lui parler.';
+  }
+  if (!hasClue('grillon')) {
+    return 'Au parc d’attractions, le robot à marrons chauds enregistre tout, jour et nuit. Ses capteurs valent tous les témoins.';
+  }
+  if (!hasClue('bache')) {
+    return 'Une grande caisse, ça se cache sous une grande bâche. Qui vend ce genre de choses à Quest ? Faites un tour au Grand Centre.';
+  }
+  if (!flag('aveux')) {
+    return 'Témoignage de Grillon plus facture de la bâche : vous avez de quoi confondre Victor, devant la maison hantée.';
+  }
+  if (!hasClue('robot')) {
+    return 'Victor a déverrouillé la maison hantée. Entrez, et regardez sous la bâche…';
+  }
+  return 'Vous avez tout en main : retournez voir l’agent Pixel et accusez le coupable.';
+}
+
 /** Un personnage a-t-il du nouveau à dire (marqueur « ! » au-dessus de la tête) ? */
 export function npcHasNews(id) {
   const piste = hasClue('roulettes') || hasClue('ray') || hasClue('marcus');
