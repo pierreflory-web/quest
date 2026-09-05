@@ -269,8 +269,17 @@ function draw(t) {
   const heroLook = state.hero === 'fille'
     ? { body: coatColor(), skin: '#f2c9a0', hat: 'detective', hair: '#b3541e', longHair: true }
     : { body: coatColor(), skin: '#f2c9a0', hat: 'detective', hair: '#5a3d20' };
-  const actors = [...m.npcs.map((n) => ({ ...n, isNpc: true })), {
-    x: state.x, y: state.y, ...heroLook, player: true,
+  const busyNow = ui.isBusy();
+  const actors = [...m.npcs.map((n) => ({
+    ...n,
+    isNpc: true,
+    moving: !busyNow && !!n.wander && !!(n.vx || n.vy),
+  })), {
+    x: state.x,
+    y: state.y,
+    ...heroLook,
+    player: true,
+    moving: started && !busyNow && (input.vx !== 0 || input.vy !== 0),
   }];
   actors.sort((a, b) => a.y - b.y);
   for (const a of actors) { drawActor(a, t); }
@@ -573,12 +582,28 @@ function drawActor(a, t) {
 
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
   ctx.beginPath();
-  ctx.ellipse(x, y + 12, 10, 4, 0, 0, Math.PI * 2);
+  ctx.ellipse(x, y + 16, 10, 4, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  const step = a.moving ? Math.sin(t * 11 + a.x + a.y) * 3.2 : 0;
+  const liftL = Math.max(0, step);
+  const liftR = Math.max(0, -step);
+  const legCol = a.robot ? '#7a8496' : '#2b2f3d';
+  const footCol = a.robot ? '#5a6480' : '#1c1f28';
+  ctx.fillStyle = legCol;
+  ctx.beginPath();
+  ctx.roundRect(x - 6, y + 5, 5, 10 - liftL, 2.5);
+  ctx.roundRect(x + 1, y + 5, 5, 10 - liftR, 2.5);
+  ctx.fill();
+  ctx.fillStyle = footCol;
+  ctx.beginPath();
+  ctx.ellipse(x - 3.5, y + 15 - liftL, 3.5, 2, 0, 0, Math.PI * 2);
+  ctx.ellipse(x + 3.5, y + 15 - liftR, 3.5, 2, 0, 0, Math.PI * 2);
   ctx.fill();
 
   ctx.fillStyle = a.body;
   ctx.beginPath();
-  ctx.roundRect(x - 8, y - 6, 16, 18, 6);
+  ctx.roundRect(x - 8, y - 6, 16, 15, 6);
   ctx.fill();
 
   if (a.hair && a.longHair) {
