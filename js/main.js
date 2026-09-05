@@ -804,9 +804,8 @@ ui.showTitle(hasSave(), () => {
     state.hero = hero;
     started = true;
     save();
-    ui.showCoatPicker(() => {
-      ui.showHowto();
-    });
+    ui.refreshCoatBtn();
+    ui.showHowto();
   });
 }, () => {
   load();
