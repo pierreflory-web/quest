@@ -718,6 +718,55 @@ function drawPrompt(tx, ty, label) {
   ctx.textBaseline = 'alphabetic';
 }
 
+/* ---------- Cartes (mini et grande) ---------- */
+
+const mmCanvas = document.getElementById('minimap');
+const mmCtx = mmCanvas.getContext('2d');
+const bigCanvas = document.getElementById('bigmap-canvas');
+const bigCtx = bigCanvas.getContext('2d');
+
+function drawMapInto(c2, ctx2, t) {
+  const m = currentMap();
+  const src = mapCanvas(m);
+  const scale = Math.min(c2.width / src.width, c2.height / src.height);
+  const w = src.width * scale;
+  const h = src.height * scale;
+  const ox = (c2.width - w) / 2;
+  const oy = (c2.height - h) / 2;
+  ctx2.fillStyle = '#0b1020';
+  ctx2.fillRect(0, 0, c2.width, c2.height);
+  ctx2.drawImage(src, ox, oy, w, h);
+  const dotR = Math.max(3, c2.width / 75);
+  for (const n of m.npcs) {
+    if (npcHasNews(n.id)) {
+      ctx2.fillStyle = '#f7d418';
+      ctx2.beginPath();
+      ctx2.arc(ox + n.x * TILE * scale, oy + n.y * TILE * scale, dotR, 0, Math.PI * 2);
+      ctx2.fill();
+    }
+  }
+  const px2 = ox + state.x * TILE * scale;
+  const py2 = oy + state.y * TILE * scale;
+  ctx2.strokeStyle = 'rgba(72,220,255,0.9)';
+  ctx2.lineWidth = 2;
+  ctx2.beginPath();
+  ctx2.arc(px2, py2, dotR + 2.5 + Math.sin(t * 5) * 1.5, 0, Math.PI * 2);
+  ctx2.stroke();
+  ctx2.fillStyle = '#ffffff';
+  ctx2.beginPath();
+  ctx2.arc(px2, py2, dotR, 0, Math.PI * 2);
+  ctx2.fill();
+}
+
+mmCanvas.addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  if (started && !ui.isBusy()) { ui.openBigmap(); }
+});
+document.getElementById('bigmap').addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  ui.closeBigmap();
+});
+
 /* ---------- Boucle ---------- */
 
 let last = 0;
@@ -726,6 +775,8 @@ function frame(ts) {
   last = ts;
   update(dt);
   draw(ts / 1000);
+  if (!mmCanvas.hidden) { drawMapInto(mmCanvas, mmCtx, ts / 1000); }
+  if (ui.isBigmapOpen()) { drawMapInto(bigCanvas, bigCtx, ts / 1000); }
   requestAnimationFrame(frame);
 }
 
@@ -783,6 +834,8 @@ window.__quest = {
   tick(dt = 1 / 60) {
     update(dt);
     draw(performance.now() / 1000);
+    if (!mmCanvas.hidden) { drawMapInto(mmCanvas, mmCtx, performance.now() / 1000); }
+    if (ui.isBigmapOpen()) { drawMapInto(bigCanvas, bigCtx, performance.now() / 1000); }
   },
 };
 

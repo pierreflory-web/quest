@@ -52,7 +52,9 @@ le jeu est installable comme une app (PWA) via « Ajouter à l'écran d'accueil 
 
 Au début d'une nouvelle enquête, on choisit son personnage — **Léa** ou **Théo** —
 puis une page « Comment jouer » explique les commandes. Le carnet permet de
-recommencer l'enquête à tout moment.
+recommencer l'enquête à tout moment. Une mini-carte en bas à gauche montre en
+permanence votre position (point blanc) et les personnages qui ont du nouveau
+(points jaunes) ; un toucher l'agrandit en plein écran.
 La progression est sauvegardée automatiquement (localStorage).
 
 La ville est vivante et futuriste : routes à guidage lumineux, drones de livraison

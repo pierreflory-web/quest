@@ -29,6 +29,14 @@
 </div>
 <button id="btn-action" type="button" hidden>A</button>
 <button id="btn-coat" type="button" hidden>🎨</button>
+<canvas id="minimap" width="220" height="220" hidden></canvas>
+
+<div id="bigmap" class="overlay" hidden>
+  <div id="bigmap-box">
+    <canvas id="bigmap-canvas" width="640" height="640"></canvas>
+    <p>Touchez la carte pour la refermer</p>
+  </div>
+</div>
 
 <div id="coat" class="overlay" hidden>
   <div class="panel">
@@ -100,6 +108,7 @@
     <div class="howto-item">💬 <b>Parler</b> — Approchez-vous d'un personnage jusqu'à voir la bulle « Parler », puis appuyez sur le bouton <b>A</b> (ou E / Espace / Entrée).</div>
     <div class="howto-item">🔎 <b>Examiner</b> — Même chose devant un objet marqué « Examiner ». Les indices trouvés remplissent votre carnet.</div>
     <div class="howto-item">📔 <b>Carnet</b> — Le bouton en haut à droite rassemble vos indices et la liste des suspects. Quand vous êtes sûr de vous, accusez un suspect auprès de l'agent Pixel.</div>
+    <div class="howto-item">🗺️ <b>Carte</b> — En bas à gauche, la mini-carte montre où vous êtes (point blanc) et qui a du nouveau (points jaunes). Touchez-la pour l'agrandir.</div>
     <div class="howto-item">💡 <b>Coincé ?</b> — Dans le carnet, le bouton « Un conseil ? » vous souffle la prochaine étape, seulement si vous le demandez.</div>
     <button id="btn-howto-ok" type="button" class="btn btn-primary">C'est parti !</button>
   </div>

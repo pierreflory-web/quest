@@ -107,6 +107,29 @@ html, body {
 }
 #btn-action:active { background: rgba(72,220,255,.5); }
 
+#minimap {
+  position: fixed;
+  left: calc(env(safe-area-inset-left, 0px) + 12px);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+  width: 110px;
+  height: 110px;
+  border: 2px solid rgba(72, 220, 255, .55);
+  border-radius: 12px;
+  background: #0b1020;
+  z-index: 5;
+}
+
+#bigmap-box { text-align: center; }
+#bigmap-canvas {
+  width: min(92vw, 70vh);
+  height: min(92vw, 70vh);
+  border: 2px solid rgba(72, 220, 255, .7);
+  border-radius: 14px;
+  background: #0b1020;
+  box-shadow: 0 0 30px rgba(72, 220, 255, .2);
+}
+#bigmap-box p { color: #9fb4d8; font-size: 13px; margin-top: 10px; }
+
 #btn-coat {
   position: fixed;
   right: calc(env(safe-area-inset-right, 0px) + 24px);

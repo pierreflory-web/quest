@@ -9,10 +9,25 @@ let notebookOpen = false;
 let titleOpen = true;
 let howtoOpen = false;
 let coatOpen = false;
+let bigmapOpen = false;
 let toastTimer = null;
 
 export function isBusy() {
-  return !!dlg || choicesOpen || notebookOpen || titleOpen || howtoOpen || coatOpen;
+  return !!dlg || choicesOpen || notebookOpen || titleOpen || howtoOpen || coatOpen || bigmapOpen;
+}
+
+export function isBigmapOpen() {
+  return bigmapOpen;
+}
+
+export function openBigmap() {
+  bigmapOpen = true;
+  $('bigmap').hidden = false;
+}
+
+export function closeBigmap() {
+  bigmapOpen = false;
+  $('bigmap').hidden = true;
 }
 
 export function dialogueOpen() {
@@ -142,6 +157,7 @@ function startHud() {
   $('hud').hidden = false;
   $('btn-action').hidden = false;
   $('btn-coat').hidden = false;
+  $('minimap').hidden = false;
   refreshCoatBtn();
   updateBadge();
 }
