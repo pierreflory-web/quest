@@ -10,10 +10,11 @@ accuse un suspect auprès de l'agent Pixel.
 
 - **Nord** — Le Grand Jardin : balançoires, fleurs colorées, bambous, arbres et allées ombragées.
 - **Sud** — Quartier des Sables : quartier abîmé, partiellement recouvert de sable, cocotiers.
-- **Ouest** — Parc d'attractions : la Comète hurlante, la Chute Libre (tour de
-  chute animée), la Grande Roue qui tourne, carrousel, pêche aux canards,
-  stand de marrons chauds et stand de tir à l'arc tenus par des robots humanoïdes,
-  et maison hantée.
+- **Ouest** — Parc d'attractions, ceint d'une clôture festive avec son portail
+  « PARC DE QUEST » sur la route et une entrée sud : la Comète hurlante, la
+  Chute Libre (tour de chute animée), la Grande Roue qui tourne au cœur du parc,
+  autos tamponneuses, carrousel, pêche aux canards, stands de marrons chauds et
+  de tir à l'arc tenus par des robots humanoïdes, et maison hantée.
 - **Est** — Le Grand Centre : grand centre commercial.
 - **Centre** — Place de l'Usine : l'usine RoboCorp, scène du crime.
 

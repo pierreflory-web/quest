@@ -82,6 +82,7 @@ function buildVille() {
     for (let x = 0; x < 60; x++) {
       let g = T.GRASS;
       if (y >= 42) { g = T.SAND; }
+      if (x <= 19 && y >= 42 && y <= 47) { g = T.GRASS; }
       if (x >= 20 && x <= 40 && y >= 20 && y <= 40) { g = T.PAVE; }
       if (x >= 41 && y >= 18 && y <= 42) { g = T.PAVE; }
       setGround(m, x, y, g);
@@ -110,7 +111,7 @@ function buildVille() {
   for (let y = 2; y <= 8; y++) { setPath(12, y); setPath(45, y); }
   for (let y = 16; y <= 28; y++) { setPath(15, y); }
   for (let y = 25; y <= 28; y++) { setPath(8, y); }
-  for (let y = 32; y <= 44; y++) { setPath(12, y); }
+  for (let y = 32; y <= 49; y++) { setPath(12, y); }
   for (let x = 13; x <= 17; x++) { setPath(x, 34); }
   for (let x = 5; x <= 11; x++) { setPath(x, 38); }
   for (let x = 5; x <= 12; x++) { setPath(x, 44); }
@@ -222,19 +223,41 @@ function buildVille() {
   prop(m, 'stand', 13, 40, { label: 'BARBE À PAPA', pink: true });
   solidRect(m, 13, 40, 14, 40);
   poi(m, 'confiserie', 15.6, 41.0, 1.2);
-  prop(m, 'pot', 2, 26); setSolid(m, 2, 26);
+  prop(m, 'pot', 1, 33); setSolid(m, 1, 33);
   prop(m, 'pot', 2, 22); setSolid(m, 2, 22);
   prop(m, 'pot', 17, 38); setSolid(m, 17, 38);
 
-  prop(m, 'droptower', 2, 31);
-  solidRect(m, 2, 34, 3, 36);
-  poi(m, 'chute', 3, 37.4, 1.6);
-  m.movers.push({ type: 'dropcab', x0: 2, y0: 31.4 });
+  prop(m, 'droptower', 2, 32);
+  solidRect(m, 2, 35, 3, 37);
+  poi(m, 'chute', 3.5, 38.4, 1.6);
+  m.movers.push({ type: 'dropcab', x0: 2, y0: 32.4 });
 
-  prop(m, 'wheelbase', 16, 18);
-  solidRect(m, 16, 22, 19, 23);
-  poi(m, 'roue', 17.5, 24.4, 1.8);
-  m.movers.push({ type: 'wheel', cx: 18, cy: 20.4, r: 1.9 });
+  prop(m, 'wheelbase', 15.5, 39.2);
+  solidRect(m, 16, 43, 19, 44);
+  poi(m, 'roue', 17.5, 45.4, 1.8);
+  m.movers.push({ type: 'wheel', cx: 17.5, cy: 41.6, r: 1.9 });
+
+  prop(m, 'bumper', 2, 25);
+  solidRect(m, 2, 25, 6, 28);
+  poi(m, 'tamponneuses', 7.2, 26.5, 1.4);
+
+  /* Enceinte du parc : clôture festive, portail sur la route, ouverture au sud. */
+  prop(m, 'parcgate', 19, 28);
+  setSolid(m, 19, 28);
+  setSolid(m, 19, 32);
+  const fenceTiles = [];
+  for (let x = 1; x <= 19; x++) { fenceTiles.push([x, 12]); }
+  for (let x = 1; x <= 19; x++) { if (x !== 12) { fenceTiles.push([x, 47]); } }
+  for (let y = 13; y <= 46; y++) {
+    if (y >= 28 && y <= 32) { continue; }
+    fenceTiles.push([19, y]);
+  }
+  for (const [fx, fy] of fenceTiles) {
+    if (!m.solid[fy * 60 + fx]) {
+      prop(m, 'fence', fx, fy);
+      setSolid(m, fx, fy);
+    }
+  }
 
   /* --- Est : centre commercial --- */
   for (let y = 18; y <= 42; y++) {
@@ -324,15 +347,15 @@ function buildVille() {
   }
 
   /* --- Personnages --- */
-  npc(m, 'pixel', 'Agent Pixel', 33.5, 31.5, { body: '#2f6fed', skin: '#f2c9a0', hat: 'cap' });
-  npc(m, 'lila', 'Lila', 24.5, 8.5, { body: '#3fae6a', skin: '#e8b48c', hat: 'straw' });
-  npc(m, 'marcus', 'Marcus', 33.5, 50.5, { body: '#8a6d4f', skin: '#d9a06e' });
+  npc(m, 'pixel', 'Agent Pixel', 33.5, 31.5, { body: '#2f6fed', skin: '#f2c9a0', hat: 'cap', hair: '#2c1e12' });
+  npc(m, 'lila', 'Lila', 24.5, 8.5, { body: '#3fae6a', skin: '#e8b48c', hat: 'straw', hair: '#7a4a1e', longHair: true });
+  npc(m, 'marcus', 'Marcus', 33.5, 50.5, { body: '#8a6d4f', skin: '#d9a06e', hair: '#8a8a86' });
   npc(m, 'grillon', 'Grillon', 16.5, 33.5, { body: '#c0c8d4', skin: '#9aa6b6', robot: true });
   npc(m, 'faucon', 'Faucon', 4.5, 44.2, { body: '#5f8f5a', skin: '#9aa6b6', robot: true, r: 2.3 });
   npc(m, 'praline', 'Praline', 13.5, 39.2, { body: '#d66a9e', skin: '#9aa6b6', robot: true, r: 2.3 });
-  npc(m, 'victor', 'Victor', 10.5, 26.5, { body: '#7c3aed', skin: '#f2c9a0', hat: 'top' });
-  npc(m, 'nadia', 'Nadia', 51.5, 30.5, { body: '#e0447c', skin: '#c98d63' });
-  npc(m, 'gustave', 'Gustave', 47.5, 32.5, { body: '#37415c', skin: '#e8b48c', hat: 'cap' });
+  npc(m, 'victor', 'Victor', 10.5, 26.5, { body: '#7c3aed', skin: '#f2c9a0', hat: 'top', hair: '#241c1c' });
+  npc(m, 'nadia', 'Nadia', 51.5, 30.5, { body: '#e0447c', skin: '#c98d63', hair: '#3a2a1e', longHair: true });
+  npc(m, 'gustave', 'Gustave', 47.5, 32.5, { body: '#37415c', skin: '#e8b48c', hat: 'cap', hair: '#4a3826' });
   npc(m, 'vanille', 'Vanille', 55.5, 27.2, { body: '#e8e2d4', skin: '#9aa6b6', robot: true, r: 2.3 });
   m.movers.push(
     { type: 'drone', cx: 30, cy: 16, rx: 14, ry: 3, sp: 0.25, ph: 0 },
@@ -381,8 +404,8 @@ function buildUsine() {
   prop(m, 'crate', 3, 9); solidRect(m, 3, 9, 4, 10);
   prop(m, 'crate', 18, 5); solidRect(m, 18, 5, 19, 6);
 
-  npc(m, 'mercier', 'Directeur Mercier', 6.5, 5.5, { body: '#37415c', skin: '#f2c9a0', hat: 'none' });
-  npc(m, 'ray', 'Ray', 17.5, 9.5, { body: '#4b5563', skin: '#caa27c', hat: 'cap' });
+  npc(m, 'mercier', 'Directeur Mercier', 6.5, 5.5, { body: '#37415c', skin: '#f2c9a0', hair: '#b8b8b4' });
+  npc(m, 'ray', 'Ray', 17.5, 9.5, { body: '#4b5563', skin: '#caa27c', hat: 'cap', hair: '#2c2418' });
   npc(m, 'k7', 'Unité K-7', 14.5, 7.5, { body: '#c0c8d4', skin: '#9aa6b6', robot: true, wander: true });
 
   return m;
@@ -1012,6 +1035,65 @@ export function drawProp(g, p, rng) {
       g.fillText('RÉOUVERTURE', x + w / 2, y + 12);
       break;
     }
+    case 'fence': {
+      g.fillStyle = '#b23a5e';
+      g.fillRect(x + 3, y + 6, 4, 16);
+      g.fillRect(x + 25, y + 6, 4, 16);
+      g.fillStyle = '#e8a0b4';
+      g.fillRect(x, y + 9, TILE, 4);
+      g.fillRect(x, y + 16, TILE, 3);
+      if ((p.x + p.y) % 2 === 0) {
+        g.fillStyle = '#f7d418';
+        g.beginPath();
+        g.moveTo(x + 5, y + 2); g.lineTo(x + 13, y + 4); g.lineTo(x + 5, y + 7);
+        g.closePath();
+        g.fill();
+      }
+      break;
+    }
+    case 'parcgate': {
+      for (const gy of [0, 4]) {
+        g.fillStyle = '#b23a5e';
+        g.fillRect(x + 8, y + gy * TILE + 2, 16, TILE - 4);
+        g.fillStyle = '#48dcff';
+        circle(g, x + 16, y + gy * TILE + 2, 4);
+      }
+      g.fillStyle = 'rgba(16,24,48,0.92)';
+      g.fillRect(x - 44, y + 66, 120, 22);
+      g.strokeStyle = 'rgba(72,220,255,0.9)';
+      g.lineWidth = 2;
+      g.strokeRect(x - 44, y + 66, 120, 22);
+      g.fillStyle = '#48dcff';
+      g.font = 'bold 12px sans-serif';
+      g.textAlign = 'center';
+      g.fillText('PARC DE QUEST', x + 16, y + 81);
+      break;
+    }
+    case 'bumper': {
+      const w = TILE * 5, h = TILE * 4;
+      g.fillStyle = '#2c3446';
+      g.fillRect(x, y, w, h);
+      g.strokeStyle = '#f7d418';
+      g.lineWidth = 4;
+      g.strokeRect(x + 3, y + 3, w - 6, h - 6);
+      const cars = [[36, 40, '#e04444'], [90, 76, '#48dcff'], [120, 34, '#3fae6a']];
+      for (const [cx2, cy2, col] of cars) {
+        g.strokeStyle = '#8894a8';
+        g.lineWidth = 2;
+        g.beginPath();
+        g.moveTo(x + cx2, y + cy2); g.lineTo(x + cx2 + 8, y + cy2 - 16);
+        g.stroke();
+        g.fillStyle = col;
+        ellipse(g, x + cx2, y + cy2, 13, 9);
+        g.fillStyle = '#101830';
+        ellipse(g, x + cx2, y + cy2, 7, 4);
+      }
+      g.fillStyle = '#f7d418';
+      g.font = 'bold 9px sans-serif';
+      g.textAlign = 'center';
+      g.fillText('TAMPONNEUSES', x + w / 2, y + h + 12);
+      break;
+    }
     case 'droptower': {
       g.fillStyle = '#5a6480';
       g.fillRect(x + 14, y, 6, TILE * 4.4);
@@ -1321,9 +1403,9 @@ function ellipse(g, x, y, rx, ry) {
 }
 
 export const ZONES = [
+  { name: "Parc d'attractions", test: (x, y) => x < 20 && y >= 12 && y <= 47 },
   { name: 'Le Grand Jardin', test: (x, y) => y < 18 },
   { name: 'Quartier des Sables', test: (x, y) => y >= 42 },
-  { name: "Parc d'attractions", test: (x) => x < 20 },
   { name: 'Le Grand Centre', test: (x) => x > 40 },
   { name: "Place de l'Usine", test: () => true },
 ];

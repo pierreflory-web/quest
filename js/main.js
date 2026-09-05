@@ -230,8 +230,8 @@ function draw(t) {
   ctx.drawImage(mapCanvas(m), 0, 0);
 
   const heroLook = state.hero === 'fille'
-    ? { body: '#a8325e', skin: '#f2c9a0', hat: 'detective', hair: '#b3541e' }
-    : { body: '#2b3a67', skin: '#f2c9a0', hat: 'detective' };
+    ? { body: '#a8325e', skin: '#f2c9a0', hat: 'detective', hair: '#b3541e', longHair: true }
+    : { body: '#2b3a67', skin: '#f2c9a0', hat: 'detective', hair: '#5a3d20' };
   const actors = [...m.npcs.map((n) => ({ ...n, isNpc: true })), {
     x: state.x, y: state.y, ...heroLook, player: true,
   }];
@@ -392,7 +392,7 @@ function drawActor(a, t) {
   ctx.roundRect(x - 8, y - 6, 16, 18, 6);
   ctx.fill();
 
-  if (a.hair) {
+  if (a.hair && a.longHair) {
     ctx.fillStyle = a.hair;
     ctx.beginPath();
     ctx.ellipse(x - 8, y - 8, 3.5, 8, 0.2, 0, Math.PI * 2);

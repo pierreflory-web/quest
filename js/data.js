@@ -318,6 +318,8 @@ export function objectDialogue(id) {
       return n('La pêche aux canards. Les canards en plastique tournent en rond, imperturbables. L’un d’eux vous fixe.');
     case 'comete':
       return n('« La Comète hurlante » — le manège à sensations fortes du parc. Les tickets sont rouge vif… comme celui trouvé dans l’usine.');
+    case 'tamponneuses':
+      return n('La piste d’autos tamponneuses. Les voitures se rechargent sur leurs bornes… et semblent piaffer d’impatience.');
     case 'chute':
       return n('« La Chute Libre » : la nacelle grimpe leeeentement… puis tombe d’un coup. Les hurlements font partie de l’expérience.');
     case 'roue':
