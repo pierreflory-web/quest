@@ -220,6 +220,17 @@ export function npcDialogue(id) {
       return { lines };
     }
 
+    case 'praline': {
+      const lines = [
+        p('Praline', 'Bip. Barbe à papa ! Un nuage rose pour deux crédits. Filée à la perfection par mes trois cent tours-minute.'),
+        p('Praline', 'Mon secret ? Un soupçon de sucre de bambou du grand jardin. Chut, bip.'),
+      ];
+      if (hasClue('marcus') || hasClue('grillon')) {
+        lines.push(p('Praline', 'Victor dit que mes nuages roses cacheraient n’importe quoi… Il adore cacher des choses, celui-là. Bip.'));
+      }
+      return { lines };
+    }
+
     case 'b12': case 'c3': case 'z9': case 'k7': {
       const nom = { b12: 'Unité B-12', c3: 'Unité C-3', z9: 'Unité Z-9', k7: 'Unité K-7' }[id];
       const phrases = [
