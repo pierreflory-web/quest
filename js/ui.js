@@ -1,0 +1,167 @@
+import { state, hasClue } from './state.js';
+import { CLUES, SUSPECTS, WIN_TEXT } from './data.js';
+
+const $ = (id) => document.getElementById(id);
+
+let dlg = null;
+let choicesOpen = false;
+let notebookOpen = false;
+let titleOpen = true;
+let toastTimer = null;
+
+export function isBusy() {
+  return !!dlg || choicesOpen || notebookOpen || titleOpen;
+}
+
+export function dialogueOpen() {
+  return !!dlg;
+}
+
+/* ---------- Dialogue ---------- */
+
+export function showDialogue(lines, onDone) {
+  dlg = { lines, i: 0, onDone };
+  $('dialogue').hidden = false;
+  renderLine();
+}
+
+function renderLine() {
+  const l = dlg.lines[dlg.i];
+  $('dlg-who').textContent = l.who;
+  $('dlg-text').textContent = l.text;
+}
+
+export function advance() {
+  if (!dlg) { return; }
+  dlg.i++;
+  if (dlg.i >= dlg.lines.length) {
+    const d = dlg;
+    dlg = null;
+    $('dialogue').hidden = true;
+    if (d.onDone) { d.onDone(); }
+  } else {
+    renderLine();
+  }
+}
+
+/* ---------- Choix ---------- */
+
+export function showChoices(title, options) {
+  choicesOpen = true;
+  $('choices-title').textContent = title;
+  const list = $('choices-list');
+  list.innerHTML = '';
+  for (const opt of options) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'btn choice-btn';
+    b.innerHTML = `${opt.label}${opt.sub ? `<small>${opt.sub}</small>` : ''}`;
+    b.addEventListener('click', () => {
+      choicesOpen = false;
+      $('choices').hidden = true;
+      opt.cb && opt.cb();
+    });
+    list.appendChild(b);
+  }
+  $('choices').hidden = false;
+}
+
+/* ---------- Carnet ---------- */
+
+export function toggleNotebook() {
+  if (notebookOpen) {
+    notebookOpen = false;
+    $('notebook').hidden = true;
+    return;
+  }
+  notebookOpen = true;
+  const cl = $('nb-clues');
+  cl.innerHTML = '';
+  if (state.clues.length === 0) {
+    cl.innerHTML = '<p class="nb-empty">Aucun indice pour l’instant. Fouillez la ville !</p>';
+  } else {
+    for (const id of state.clues) {
+      const c = CLUES[id];
+      if (!c) { continue; }
+      const div = document.createElement('div');
+      div.className = 'nb-item';
+      div.innerHTML = `<b>${c.title}</b><span>${c.desc}</span>`;
+      cl.appendChild(div);
+    }
+  }
+  const sl = $('nb-suspects');
+  sl.innerHTML = '';
+  for (const s of SUSPECTS) {
+    const div = document.createElement('div');
+    div.className = 'nb-item';
+    div.innerHTML = `<b>${s.name}</b><span>${s.role}</span>`;
+    sl.appendChild(div);
+  }
+  $('notebook').hidden = false;
+}
+
+export function updateBadge() {
+  const b = $('clue-badge');
+  b.textContent = state.clues.length;
+  b.hidden = state.clues.length === 0;
+}
+
+/* ---------- Toast ---------- */
+
+export function toast(text, ms = 2600) {
+  const t = $('toast');
+  t.textContent = text;
+  t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.hidden = true; }, ms);
+}
+
+/* ---------- Écrans ---------- */
+
+export function showTitle(hasSaveGame, onNew, onContinue) {
+  titleOpen = true;
+  $('title').hidden = false;
+  $('btn-continue').hidden = !hasSaveGame;
+  $('btn-new').onclick = () => {
+    titleOpen = false;
+    $('title').hidden = true;
+    startHud();
+    onNew();
+  };
+  $('btn-continue').onclick = () => {
+    titleOpen = false;
+    $('title').hidden = true;
+    startHud();
+    onContinue();
+  };
+}
+
+function startHud() {
+  $('hud').hidden = false;
+  $('btn-action').hidden = false;
+  updateBadge();
+}
+
+export function showWin(onReplay) {
+  $('win-text').textContent = WIN_TEXT;
+  $('win').hidden = false;
+  choicesOpen = true;
+  $('btn-win-continue').onclick = () => {
+    choicesOpen = false;
+    $('win').hidden = true;
+  };
+  $('btn-replay').onclick = () => { onReplay(); };
+}
+
+export function setZoneName(name) {
+  $('zone-name').textContent = name;
+}
+
+export function initUi() {
+  $('btn-notebook').addEventListener('click', toggleNotebook);
+  $('btn-close-notebook').addEventListener('click', toggleNotebook);
+  $('dialogue').addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    advance();
+  });
+}

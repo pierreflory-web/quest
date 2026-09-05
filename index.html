@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Quest — L'enquête</title>
+<meta name="theme-color" content="#0b1020">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<canvas id="game"></canvas>
+
+<div id="hud" hidden>
+  <div id="zone-name"></div>
+  <button id="btn-notebook" type="button">🔍 Carnet <span id="clue-badge" hidden>0</span></button>
+</div>
+
+<div id="stick-zone">
+  <div id="stick-base" hidden><div id="stick-knob"></div></div>
+</div>
+<button id="btn-action" type="button" hidden>A</button>
+
+<div id="dialogue" hidden>
+  <div id="dlg-who"></div>
+  <div id="dlg-text"></div>
+  <div id="dlg-next">▼</div>
+</div>
+
+<div id="choices" class="overlay" hidden>
+  <div class="panel">
+    <h2 id="choices-title"></h2>
+    <div id="choices-list"></div>
+  </div>
+</div>
+
+<div id="notebook" class="overlay" hidden>
+  <div class="panel">
+    <h2>Carnet de détective</h2>
+    <h3>Indices</h3>
+    <div id="nb-clues"></div>
+    <h3>Suspects</h3>
+    <div id="nb-suspects"></div>
+    <button id="btn-close-notebook" type="button" class="btn">Fermer</button>
+  </div>
+</div>
+
+<div id="title" class="overlay">
+  <div class="panel title-panel">
+    <h1>QUEST</h1>
+    <p class="subtitle">L'enquête du robot volé</p>
+    <p class="pitch">Le prototype NOVA-7, un robot humanoïde d'une valeur inestimable,
+    a été dérobé cette nuit dans l'usine RoboCorp. À vous de retrouver le coupable
+    dans les rues de Quest, la petite ville du futur.</p>
+    <button id="btn-new" type="button" class="btn btn-primary">Nouvelle enquête</button>
+    <button id="btn-continue" type="button" class="btn" hidden>Continuer</button>
+  </div>
+</div>
+
+<div id="win" class="overlay" hidden>
+  <div class="panel title-panel">
+    <h1>Affaire classée !</h1>
+    <p class="pitch" id="win-text"></p>
+    <button id="btn-win-continue" type="button" class="btn btn-primary">Continuer à explorer</button>
+    <button id="btn-replay" type="button" class="btn">Rejouer</button>
+  </div>
+</div>
+
+<div id="toast" hidden></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
