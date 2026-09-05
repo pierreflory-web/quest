@@ -2,6 +2,7 @@ import { state, hasClue, addClue, flag, setFlag, save, load, hasSave, reset } fr
 import { CLUES, SUSPECTS, npcDialogue, objectDialogue, accusationResult, LOCKED_DOOR_MSG, POI_CLUES, npcHasNews } from './data.js';
 import { TILE, buildWorld, mapCanvas, isSolid, zoneName, drawProp } from './world.js';
 import { input, initInput } from './input.js';
+import { startMusic, toggleMute, isMuted, setTheme } from './audio.js';
 import * as ui from './ui.js';
 
 const canvas = document.getElementById('game');
@@ -37,6 +38,7 @@ function currentTarget() {
   let best = null;
   let bestD = INTERACT_R;
   for (const n of m.npcs) {
+    if (n.noTalk) { continue; }
     const d = Math.hypot(n.x - state.x, n.y - state.y);
     if (d < Math.max(bestD, n.r || 0) && d <= (n.r || INTERACT_R) && (!best || d < bestD)) {
       best = { kind: 'npc', ref: n };
@@ -146,6 +148,7 @@ function checkPortals() {
   state.x = pt.tx;
   state.y = pt.ty;
   leftPortal = false;
+  setTheme(state.map === 'hante' ? 'hante' : 'ville');
   save();
 }
 
@@ -173,7 +176,7 @@ function updateWanderers(dt) {
       }
     }
     if (!n.vx && !n.vy) { continue; }
-    const sp = 1.5;
+    const sp = n.sp || 1.5;
     const nx = n.x + n.vx * sp * dt;
     const ny = n.y + n.vy * sp * dt;
     if (canStand(m, nx, n.y)) { n.x = nx; } else { n.vx = -n.vx; }
@@ -374,6 +377,11 @@ function drawActor(a, t) {
   const x = a.x * TILE;
   const y = a.y * TILE + (a.player ? 0 : Math.sin(t * 2.4 + a.x * 3) * 1.2);
 
+  if (a.cat) {
+    drawCat(x, a.y * TILE, t);
+    return;
+  }
+
   ctx.fillStyle = 'rgba(0,0,0,0.25)';
   ctx.beginPath();
   ctx.ellipse(x, y + 12, 10, 4, 0, 0, Math.PI * 2);
@@ -457,6 +465,51 @@ function drawActor(a, t) {
   }
 }
 
+function drawCat(x, y, t) {
+  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.beginPath();
+  ctx.ellipse(x, y + 8, 8, 3, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.strokeStyle = '#d07f2e';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(x - 8, y + 2);
+  ctx.quadraticCurveTo(x - 14, y - 2 + Math.sin(t * 4) * 3, x - 12, y - 8 + Math.sin(t * 4) * 2);
+  ctx.stroke();
+
+  ctx.fillStyle = '#e8963c';
+  ctx.beginPath();
+  ctx.ellipse(x - 2, y + 2, 8, 5.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#d07f2e';
+  ctx.fillRect(x - 6, y - 2, 2.5, 4);
+  ctx.fillRect(x - 1, y - 3, 2.5, 5);
+
+  ctx.fillStyle = '#e8963c';
+  ctx.beginPath();
+  ctx.arc(x + 7, y - 3, 5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(x + 3, y - 6); ctx.lineTo(x + 4.5, y - 11); ctx.lineTo(x + 7, y - 7);
+  ctx.moveTo(x + 11, y - 6); ctx.lineTo(x + 9.5, y - 11); ctx.lineTo(x + 7.5, y - 7);
+  ctx.fill();
+  ctx.fillStyle = '#1e2536';
+  ctx.beginPath();
+  ctx.arc(x + 5.5, y - 4, 1.1, 0, Math.PI * 2);
+  ctx.arc(x + 9, y - 4, 1.1, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#c2566a';
+  ctx.fillRect(x + 6.7, y - 2.5, 1.6, 1.4);
+
+  if ((t % 22) < 2.2) {
+    ctx.fillStyle = 'rgba(11,16,32,0.85)';
+    ctx.font = 'italic 11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Miaou.', x + 4, y - 16);
+  }
+}
+
 function drawPrompt(tx, ty, label) {
   const x = tx * TILE;
   const y = ty * TILE;
@@ -492,8 +545,21 @@ function frame(ts) {
 ui.initUi();
 initInput(onAction);
 
+const btnMusic = document.getElementById('btn-music');
+function refreshMusicBtn() {
+  btnMusic.textContent = isMuted() ? '🔇' : '🔊';
+}
+refreshMusicBtn();
+btnMusic.addEventListener('click', () => {
+  startMusic();
+  toggleMute();
+  refreshMusicBtn();
+});
+
 ui.showTitle(hasSave(), () => {
   reset();
+  startMusic();
+  setTheme('ville');
   ui.showHeroSelect((hero) => {
     state.hero = hero;
     started = true;
@@ -502,6 +568,8 @@ ui.showTitle(hasSave(), () => {
   });
 }, () => {
   load();
+  startMusic();
+  setTheme(state.map === 'hante' ? 'hante' : 'ville');
   started = true;
   ui.updateBadge();
 });

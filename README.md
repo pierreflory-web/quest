@@ -56,6 +56,11 @@ un food court avec Vanille le robot glacier, une boutique de jouets, un photomat
 un plan holographique, un magasin au rideau de fer, une fontaine à vœux et une
 mosaïque monumentale. Dans la maison hantée, fantômes et squelettes s'animent.
 
+**Musique d'ambiance** : générée en Web Audio (aucun fichier son) — nappe rêveuse
+dans la ville, drone inquiétant dans la maison hantée ; bouton 🔊/🔇 dans
+l'interface, préférence mémorisée. Un chat de gouttière se balade dans le grand
+jardin — inutile d'essayer de lui parler, c'est un chat.
+
 **Lisibilité des indices** : un « ! » jaune flotte au-dessus des personnages qui
 ont du nouveau à dire, une loupe cyan pulse sur les objets-indices pas encore
 examinés, et la bulle d'action affiche « Indice ! » devant eux.

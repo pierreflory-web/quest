@@ -343,6 +343,7 @@ function buildVille() {
 
   npc(m, 'b12', 'Unité B-12', 27.5, 37.5, { body: '#c0c8d4', skin: '#9aa6b6', robot: true, wander: true });
   npc(m, 'c3', 'Unité C-3', 20.5, 8.5, { body: '#aab8d0', skin: '#8e9cb4', robot: true, wander: true });
+  npc(m, 'chat', 'Chat', 24.5, 12.5, { cat: true, wander: true, noTalk: true, sp: 2.3 });
   npc(m, 'z9', 'Unité Z-9', 50.5, 27.5, { body: '#d4c8b0', skin: '#a8a090', robot: true, wander: true });
 
   return m;

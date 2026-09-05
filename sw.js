@@ -1,9 +1,10 @@
-const CACHE = 'quest-v1';
+const CACHE = 'quest-v2';
 const ASSETS = [
   '.',
   'index.html',
   'css/style.css',
   'js/main.js',
+  'js/audio.js',
   'js/world.js',
   'js/data.js',
   'js/state.js',

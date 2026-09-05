@@ -40,8 +40,20 @@ html, body {
   font-size: 14px;
   letter-spacing: .5px;
 }
-#btn-notebook {
+.hud-buttons {
+  display: flex;
+  gap: 8px;
   pointer-events: auto;
+}
+#btn-music {
+  background: rgba(11, 16, 32, .85);
+  border: 1px solid rgba(72, 220, 255, .5);
+  color: #e8ecf5;
+  border-radius: 20px;
+  padding: 8px 12px;
+  font-size: 15px;
+}
+#btn-notebook {
   background: rgba(11, 16, 32, .85);
   border: 1px solid rgba(72, 220, 255, .5);
   color: #e8ecf5;
