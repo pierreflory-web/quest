@@ -98,18 +98,24 @@ function buildVille() {
       if (getGround(m, x, y) !== T.PAVE) { setGround(m, x, y, T.ROAD); }
     }
   }
-  for (let x = 3; x <= 56; x++) { setGround(m, x, 8, T.PATH); }
+  /* Une allée ne recouvre jamais la route lumineuse ni la place. */
+  const setPath = (x, y) => {
+    const g = getGround(m, x, y);
+    if (g !== T.ROAD && g !== T.PAVE) { setGround(m, x, y, T.PATH); }
+  };
+
+  for (let x = 3; x <= 56; x++) { setPath(x, 8); }
 
   /* Réseau d'allées : chaque lieu rejoint le carrefour central. */
-  for (let y = 2; y <= 8; y++) { setGround(m, 12, y, T.PATH); setGround(m, 45, y, T.PATH); }
-  for (let y = 16; y <= 28; y++) { setGround(m, 15, y, T.PATH); }
-  for (let y = 25; y <= 28; y++) { setGround(m, 8, y, T.PATH); }
-  for (let y = 31; y <= 44; y++) { setGround(m, 12, y, T.PATH); }
-  for (let x = 13; x <= 17; x++) { setGround(m, x, 34, T.PATH); }
-  for (let x = 5; x <= 11; x++) { setGround(m, x, 38, T.PATH); }
-  for (let x = 5; x <= 12; x++) { setGround(m, x, 44, T.PATH); }
-  for (let x = 32; x <= 35; x++) { setGround(m, x, 50, T.PATH); }
-  for (let x = 26; x <= 29; x++) { setGround(m, x, 53, T.PATH); }
+  for (let y = 2; y <= 8; y++) { setPath(12, y); setPath(45, y); }
+  for (let y = 16; y <= 28; y++) { setPath(15, y); }
+  for (let y = 25; y <= 28; y++) { setPath(8, y); }
+  for (let y = 32; y <= 44; y++) { setPath(12, y); }
+  for (let x = 13; x <= 17; x++) { setPath(x, 34); }
+  for (let x = 5; x <= 11; x++) { setPath(x, 38); }
+  for (let x = 5; x <= 12; x++) { setPath(x, 44); }
+  for (let x = 32; x <= 35; x++) { setPath(x, 50); }
+  for (let x = 26; x <= 28; x++) { setPath(x, 53); }
 
   for (let i = 0; i < 60; i++) {
     setSolid(m, i, 0); setSolid(m, i, 59); setSolid(m, 0, i); setSolid(m, 59, i);
