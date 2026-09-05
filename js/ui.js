@@ -39,6 +39,7 @@ export function dialogueOpen() {
 export function showDialogue(lines, onDone) {
   dlg = { lines, i: 0, onDone };
   $('dialogue').hidden = false;
+  $('minimap').style.visibility = 'hidden';
   renderLine();
 }
 
@@ -55,6 +56,7 @@ export function advance() {
     const d = dlg;
     dlg = null;
     $('dialogue').hidden = true;
+    $('minimap').style.visibility = '';
     if (d.onDone) { d.onDone(); }
   } else {
     renderLine();
