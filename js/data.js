@@ -245,6 +245,17 @@ export function npcDialogue(id) {
       };
     }
 
+    case 'bosquet': {
+      const lines = [
+        p('Bosquet', 'Bip. Jardinier en chef du Grand Jardin. Trois mille deux cent quatre fleurs, et je les connais toutes par leur petit nom.'),
+        p('Bosquet', 'Les bambous poussent d’un mètre par nuit, il faut bien quelqu’un pour les surveiller. Bip.'),
+      ];
+      if (hasClue('marcus') || hasClue('grillon')) {
+        lines.push(p('Bosquet', 'Curieux, tout de même : le mois dernier, Victor m’a demandé un devis pour une haie « très opaque » autour de sa maison hantée. Bip.'));
+      }
+      return { lines };
+    }
+
     case 'faucon': {
       const lines = [
         p('Faucon', 'Bip. Tir à l’arc ! Trois flèches pour un crédit. Mes capteurs mesurent le vent au millimètre près.'),
@@ -338,6 +349,18 @@ export function objectDialogue(id) {
       return n('Des vitrines du centre commercial : hologrammes de mode, gadgets lumineux et parapluies anti-drones.');
     case 'banc':
       return n('Un banc public fraîchement repeint. Parfait pour s’asseoir et réfléchir aux indices.');
+    case 'etang':
+      return n('L’étang aux nénuphars. Des poissons bioluminescents tracent des spirales bleutées sous le pont de bois. Une grenouille vous fixe, imperturbable.');
+    case 'kiosque':
+      return n('Le kiosque à musique du jardin. Ses haut-parleurs diffusent la mélodie de la ville en sourdine, pour les fleurs.');
+    case 'labyrinthe':
+      return n('L’entrée du labyrinthe de haies. Les buissons sont taillés au laser chaque matin, paraît-il. Quelque chose se cache au centre…');
+    case 'topiaire':
+      return n('Au cœur du labyrinthe : une topiaire en forme de robot, taillée à la perfection. On jurerait qu’elle vous salue.');
+    case 'statuerobot':
+      return n('Une statue de pierre : un robot ouvrier tenant une fleur. L’inscription : « À ceux qui ont construit Quest. »');
+    case 'statuechat':
+      return n('Une statue de chat, patte levée. L’inscription dit simplement : « Miaou. » Rien d’autre.');
     case 'oiseaux':
       return n('Une fontaine à oiseaux. Deux moineaux mécaniques s’y baignent en pépiant des notes électroniques.');
     case 'statue':

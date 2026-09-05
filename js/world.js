@@ -165,7 +165,7 @@ function buildVille() {
     }
   }
   poi(m, 'bambous', 50, 8, 2.4);
-  for (const bx of [20, 26, 34, 40]) {
+  for (const bx of [20, 26, 34]) {
     prop(m, 'bench', bx, 7);
     setSolid(m, bx, 7);
     poi(m, 'banc', bx + 0.5, 8, 1.2);
@@ -173,12 +173,59 @@ function buildVille() {
   prop(m, 'birdbath', 42, 12);
   setSolid(m, 42, 12);
   poi(m, 'oiseaux', 42.5, 13.4, 1.3);
+
+  /* Étang aux nénuphars traversé par un pont de bois (colonne x5-x6). */
+  prop(m, 'gpond', 3, 2);
+  solidRect(m, 3, 2, 8, 5);
+  for (let y = 2; y <= 5; y++) { setSolid(m, 5, y, 0); setSolid(m, 6, y, 0); }
+  poi(m, 'etang', 4, 6.4, 1.6);
+
+  /* Kiosque à musique. */
+  prop(m, 'gazebo', 34, 4);
+  solidRect(m, 34, 4, 36, 6);
+  poi(m, 'kiosque', 35.5, 7.2, 1.6);
+
+  /* Labyrinthe de haies, topiaire au centre. */
+  const maze = [];
+  for (let x = 37; x <= 43; x++) { maze.push([x, 1]); }
+  for (const y of [2, 3, 4, 5, 6]) { maze.push([37, y]); maze.push([43, y]); }
+  for (const x of [39, 40, 41]) { maze.push([x, 3]); }
+  for (const y of [4, 5, 6]) { maze.push([39, y]); maze.push([41, y]); }
+  for (const x of [37, 38, 39, 41, 42, 43]) { maze.push([x, 7]); }
+  for (const [hx, hy] of maze) {
+    prop(m, 'hedge', hx, hy);
+    setSolid(m, hx, hy);
+  }
+  prop(m, 'topiary', 40, 4);
+  setSolid(m, 40, 4);
+  poi(m, 'topiaire', 40.5, 5.5, 1.2);
+  poi(m, 'labyrinthe', 40.5, 8.4, 1.3);
+
+  /* Statues du jardin. */
+  prop(m, 'gstatue', 18, 11);
+  setSolid(m, 18, 11);
+  poi(m, 'statuerobot', 18.5, 12.4, 1.3);
+  prop(m, 'gstatue', 33, 12, { kind: 'chat' });
+  setSolid(m, 33, 12);
+  poi(m, 'statuechat', 33.5, 13.4, 1.3);
+
+  m.movers.push(
+    { type: 'butterfly', cx: 24, cy: 10, rx: 2.2, ry: 1.4, hue: 330, ph: 0 },
+    { type: 'butterfly', cx: 33.5, cy: 10.5, rx: 1.8, ry: 1.2, hue: 50, ph: 2.1 },
+    { type: 'butterfly', cx: 9, cy: 7, rx: 1.6, ry: 1.1, hue: 210, ph: 4.4 },
+    { type: 'bird', x: 26, y: 11, hx: 26, hy: 11, mode: 'ground' },
+    { type: 'bird', x: 36, y: 13, hx: 36, hy: 13, mode: 'ground' },
+    { type: 'squirrel', x0: 20, x1: 27, y0: 14, ph: 0.3 },
+  );
+
   for (let i = 0; i < 55; i++) {
     const x = 2 + Math.floor(rng() * 56);
     const y = 1 + Math.floor(rng() * 16);
     if (y >= 7 && y <= 9) { continue; }
     if (x >= 28 && x <= 32) { continue; }
     if (x >= 9 && x <= 16 && y <= 5) { continue; }
+    if (x >= 37 && x <= 43 && y <= 7) { continue; }
+    if (x >= 3 && x <= 8 && y >= 2 && y <= 5) { continue; }
     if (getGround(m, x, y) === T.GRASS && !m.solid[y * 60 + x]) {
       prop(m, 'tree', x, y);
       setSolid(m, x, y);
@@ -367,6 +414,7 @@ function buildVille() {
   npc(m, 'b12', 'Unité B-12', 27.5, 37.5, { body: '#c0c8d4', skin: '#9aa6b6', robot: true, wander: true });
   npc(m, 'c3', 'Unité C-3', 20.5, 8.5, { body: '#aab8d0', skin: '#8e9cb4', robot: true, wander: true });
   npc(m, 'chat', 'Chat', 24.5, 12.5, { cat: true, wander: true, noTalk: true, sp: 2.3 });
+  npc(m, 'bosquet', 'Bosquet', 46.5, 8.5, { body: '#4f8f6a', skin: '#9aa6b6', robot: true, wander: true });
   npc(m, 'z9', 'Unité Z-9', 50.5, 27.5, { body: '#d4c8b0', skin: '#a8a090', robot: true, wander: true });
 
   return m;
@@ -1033,6 +1081,132 @@ export function drawProp(g, p, rng) {
       g.font = 'bold 7px sans-serif';
       g.textAlign = 'center';
       g.fillText('RÉOUVERTURE', x + w / 2, y + 12);
+      break;
+    }
+    case 'gpond': {
+      const w = TILE * 6, h = TILE * 4;
+      g.fillStyle = '#3ba7d9';
+      ellipse(g, x + w / 2, y + h / 2, w / 2, h / 2);
+      g.fillStyle = '#5fc0e8';
+      ellipse(g, x + w / 2, y + h / 2, w / 2 - 12, h / 2 - 10);
+      g.strokeStyle = 'rgba(72,220,255,0.9)';
+      g.lineWidth = 2.5;
+      g.beginPath();
+      g.moveTo(x + 24, y + 64);
+      g.quadraticCurveTo(x + 44, y + 50, x + 60, y + 66);
+      g.moveTo(x + 120, y + 44);
+      g.quadraticCurveTo(x + 140, y + 58, x + 156, y + 46);
+      g.stroke();
+      for (const [lx, ly] of [[28, 30], [140, 84], [46, 96], [150, 26]]) {
+        g.fillStyle = '#2f8f46';
+        ellipse(g, x + lx, y + ly, 9, 6);
+        g.fillStyle = '#3ba7d9';
+        g.beginPath();
+        g.moveTo(x + lx, y + ly);
+        g.lineTo(x + lx + 9, y + ly - 4);
+        g.lineTo(x + lx + 9, y + ly + 2);
+        g.closePath();
+        g.fill();
+      }
+      g.fillStyle = '#3fae6a';
+      circle(g, x + 30, y + 88, 5);
+      circle(g, x + 26, y + 84, 3);
+      g.fillStyle = '#101830';
+      circle(g, x + 25, y + 83, 1);
+      g.fillStyle = '#8a5a30';
+      g.fillRect(x + TILE * 2, y - 2, TILE * 2, h + 4);
+      g.strokeStyle = '#6b4523';
+      g.lineWidth = 2;
+      g.beginPath();
+      for (let i = 0; i <= 8; i++) {
+        g.moveTo(x + TILE * 2, y - 2 + i * (h + 4) / 8);
+        g.lineTo(x + TILE * 4, y - 2 + i * (h + 4) / 8);
+      }
+      g.stroke();
+      g.fillStyle = '#5f4423';
+      g.fillRect(x + TILE * 2, y - 4, TILE * 2, 3);
+      g.fillRect(x + TILE * 2, y + h + 1, TILE * 2, 3);
+      break;
+    }
+    case 'gazebo': {
+      const cx = x + TILE * 1.5, cy = y + TILE * 1.5;
+      g.fillStyle = '#d8dde8';
+      ellipse(g, cx, cy + 16, 44, 26);
+      g.fillStyle = '#b23a5e';
+      for (const [dx, dy] of [[-34, 8], [34, 8], [-22, -10], [22, -10]]) {
+        g.fillRect(cx + dx - 2, cy + dy, 4, 22);
+      }
+      g.fillStyle = '#2f8f8f';
+      g.beginPath();
+      g.moveTo(cx - 48, cy - 4);
+      g.lineTo(cx, cy - 40);
+      g.lineTo(cx + 48, cy - 4);
+      g.closePath();
+      g.fill();
+      g.fillStyle = '#48dcff';
+      circle(g, cx, cy - 42, 4);
+      g.fillStyle = '#e8ecf5';
+      g.font = 'bold 12px sans-serif';
+      g.textAlign = 'center';
+      g.fillText('♪', cx, cy + 2);
+      break;
+    }
+    case 'hedge': {
+      g.fillStyle = '#2f7d3a';
+      g.beginPath();
+      g.roundRect(x + 1, y + 1, TILE - 2, TILE - 2, 6);
+      g.fill();
+      g.fillStyle = '#3c9448';
+      circle(g, x + 9, y + 9, 5);
+      circle(g, x + 22, y + 13, 6);
+      circle(g, x + 13, y + 22, 5);
+      break;
+    }
+    case 'topiary': {
+      g.fillStyle = '#b06a3c';
+      g.fillRect(x + 10, y + 24, 12, 6);
+      g.fillStyle = '#3c9448';
+      g.fillRect(x + 8, y + 8, 16, 16);
+      circle(g, x + 16, y + 2, 8);
+      g.fillStyle = '#8fca5c';
+      g.fillRect(x + 12, y - 1, 3, 3);
+      g.fillRect(x + 18, y - 1, 3, 3);
+      g.fillStyle = '#2f7d3a';
+      g.fillRect(x + 4, y + 10, 4, 8);
+      g.fillRect(x + 24, y + 10, 4, 8);
+      break;
+    }
+    case 'gstatue': {
+      g.fillStyle = '#8894a8';
+      g.fillRect(x + 4, y + 22, 24, 8);
+      g.fillStyle = '#a5b0c2';
+      if (p.kind === 'chat') {
+        ellipse(g, x + 16, y + 16, 8, 6);
+        circle(g, x + 21, y + 8, 5);
+        g.beginPath();
+        g.moveTo(x + 17, y + 5); g.lineTo(x + 18.5, y + 1); g.lineTo(x + 21, y + 4);
+        g.moveTo(x + 25, y + 5); g.lineTo(x + 23.5, y + 1); g.lineTo(x + 21.5, y + 4);
+        g.fill();
+        g.strokeStyle = '#a5b0c2';
+        g.lineWidth = 2.5;
+        g.beginPath();
+        g.moveTo(x + 9, y + 16);
+        g.quadraticCurveTo(x + 4, y + 10, x + 7, y + 5);
+        g.stroke();
+      } else {
+        g.fillRect(x + 10, y + 6, 12, 16);
+        circle(g, x + 16, y + 2, 6);
+        g.fillStyle = '#8894a8';
+        g.fillRect(x + 13, y, 2, 2);
+        g.fillRect(x + 17, y, 2, 2);
+        g.fillStyle = '#e0447c';
+        circle(g, x + 25, y + 10, 3);
+        g.strokeStyle = '#3c9448';
+        g.lineWidth = 2;
+        g.beginPath();
+        g.moveTo(x + 25, y + 12); g.lineTo(x + 24, y + 18);
+        g.stroke();
+      }
       break;
     }
     case 'fence': {

@@ -184,12 +184,48 @@ function updateWanderers(dt) {
   }
 }
 
+function updateBirds(dt) {
+  const m = currentMap();
+  for (const b of m.movers) {
+    if (b.type !== 'bird') { continue; }
+    if (b.mode === 'fly') {
+      b.x += b.vx * dt;
+      b.y += b.vy * dt;
+      b.timer -= dt;
+      if (b.timer <= 0) { landBird(b, m); }
+    } else if (Math.hypot(b.x - state.x, b.y - state.y) < 2.2) {
+      const ang = Math.atan2(b.y - state.y, b.x - state.x);
+      b.mode = 'fly';
+      b.vx = Math.cos(ang) * 4;
+      b.vy = Math.sin(ang) * 4 - 1.5;
+      b.timer = 2.2;
+    }
+  }
+}
+
+function landBird(b, m) {
+  for (let i = 0; i < 20; i++) {
+    const x = 3 + Math.random() * 40;
+    const y = 1.5 + Math.random() * 14;
+    if (!isSolid(m, x, y) && Math.hypot(x - state.x, y - state.y) > 4) {
+      b.x = x;
+      b.y = y;
+      b.mode = 'ground';
+      return;
+    }
+  }
+  b.x = b.hx;
+  b.y = b.hy;
+  b.mode = 'ground';
+}
+
 let saveTimer = 0;
 
 function update(dt) {
   if (!started || ui.isBusy()) { return; }
   tryMove(dt);
   updateWanderers(dt);
+  updateBirds(dt);
   checkPortals();
   saveTimer += dt;
   if (saveTimer > 4) {
@@ -336,6 +372,89 @@ function drawMover(mv, t) {
     const sx = mv.x0 + Math.sin(t * 3 + mv.ph) * 0.14;
     const sy = mv.y0 - Math.abs(Math.sin(t * 5 + mv.ph)) * 0.12;
     drawProp(ctx, { type: 'skeleton', x: sx, y: sy });
+  } else if (mv.type === 'butterfly') {
+    const bx = (mv.cx + Math.sin(t * 0.7 + mv.ph) * mv.rx + Math.sin(t * 2.3 + mv.ph) * 0.3) * TILE;
+    const by = (mv.cy + Math.sin(t * 0.9 + mv.ph * 2) * mv.ry + Math.sin(t * 3.1) * 0.2) * TILE;
+    const flap = 0.3 + Math.abs(Math.sin(t * 9 + mv.ph)) * 0.7;
+    ctx.fillStyle = `hsl(${mv.hue} 80% 65%)`;
+    ctx.beginPath();
+    ctx.ellipse(bx - 4 * flap, by - 1, 4.5 * flap, 3.5, -0.4, 0, Math.PI * 2);
+    ctx.ellipse(bx + 4 * flap, by - 1, 4.5 * flap, 3.5, 0.4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#2c2438';
+    ctx.fillRect(bx - 1, by - 4, 2, 8);
+  } else if (mv.type === 'bird') {
+    const bx = mv.x * TILE;
+    const by = mv.y * TILE;
+    if (mv.mode === 'fly') {
+      const flap = Math.sin(t * 16) > 0 ? 1 : -1;
+      ctx.strokeStyle = '#5f6c82';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(bx - 8, by - 4 * flap); ctx.quadraticCurveTo(bx - 3, by, bx, by);
+      ctx.moveTo(bx + 8, by - 4 * flap); ctx.quadraticCurveTo(bx + 3, by, bx, by);
+      ctx.stroke();
+      ctx.fillStyle = '#8a94a8';
+      ctx.beginPath();
+      ctx.ellipse(bx, by, 5, 3.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      const hop = Math.abs(Math.sin(t * 5 + mv.hx)) * 1.5;
+      ctx.fillStyle = 'rgba(0,0,0,0.18)';
+      ctx.beginPath();
+      ctx.ellipse(bx, by + 5, 5, 2, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#8a94a8';
+      ctx.beginPath();
+      ctx.ellipse(bx, by - hop, 5, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#e08a5a';
+      ctx.beginPath();
+      ctx.ellipse(bx + 1, by + 1 - hop, 3, 2.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#8a94a8';
+      ctx.beginPath();
+      ctx.arc(bx + 4, by - 4 - hop, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#f08c1a';
+      ctx.beginPath();
+      ctx.moveTo(bx + 7, by - 4 - hop); ctx.lineTo(bx + 10, by - 3.5 - hop); ctx.lineTo(bx + 7, by - 2.5 - hop);
+      ctx.fill();
+      ctx.fillStyle = '#101830';
+      ctx.beginPath();
+      ctx.arc(bx + 5, by - 5 - hop, 0.9, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  } else if (mv.type === 'squirrel') {
+    const cyc = (t * 0.22 + mv.ph) % 2;
+    let u;
+    let running = false;
+    if (cyc < 0.3) { u = cyc / 0.3; running = true; }
+    else if (cyc < 1) { u = 1; }
+    else if (cyc < 1.3) { u = 1 - (cyc - 1) / 0.3; running = true; }
+    else { u = 0; }
+    const sx = (mv.x0 + (mv.x1 - mv.x0) * u) * TILE;
+    const sy = mv.y0 * TILE - (running ? Math.abs(Math.sin(t * 18)) * 3 : 0);
+    ctx.fillStyle = '#9a5f2e';
+    ctx.beginPath();
+    ctx.ellipse(sx, sy, 6, 4.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(sx + 6, sy - 3, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(sx + 5, sy - 6); ctx.lineTo(sx + 6, sy - 9); ctx.lineTo(sx + 8, sy - 6);
+    ctx.fill();
+    ctx.strokeStyle = '#b06a3c';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(sx - 6, sy - 1);
+    ctx.quadraticCurveTo(sx - 12, sy - 8 + Math.sin(t * 6) * 2, sx - 8, sy - 12);
+    ctx.stroke();
+    ctx.fillStyle = '#101830';
+    ctx.beginPath();
+    ctx.arc(sx + 7, sy - 4, 0.9, 0, Math.PI * 2);
+    ctx.fill();
   }
 }
 

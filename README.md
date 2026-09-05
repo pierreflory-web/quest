@@ -8,7 +8,11 @@ accuse un suspect auprès de l'agent Pixel.
 
 ## La ville de Quest
 
-- **Nord** — Le Grand Jardin : balançoires, fleurs colorées, bambous, arbres et allées ombragées.
+- **Nord** — Le Grand Jardin : balançoires, fleurs colorées, bambous, arbres et
+  allées ombragées ; étang aux nénuphars traversé d'un pont de bois, kiosque à
+  musique, labyrinthe de haies (avec une topiaire-robot au centre), statues,
+  Bosquet le robot jardinier, et une faune animée — papillons, oiseaux qui
+  s'envolent à l'approche, écureuil et chat de gouttière.
 - **Sud** — Quartier des Sables : quartier abîmé, partiellement recouvert de sable, cocotiers.
 - **Ouest** — Parc d'attractions, ceint d'une clôture festive avec son portail
   « PARC DE QUEST » sur la route et une entrée sud : la Comète hurlante, la
