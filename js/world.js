@@ -109,7 +109,7 @@ function buildVille() {
 
   /* Réseau d'allées : chaque lieu rejoint le carrefour central. */
   for (let y = 2; y <= 8; y++) { setPath(12, y); setPath(45, y); }
-  for (let y = 16; y <= 28; y++) { setPath(15, y); }
+  for (let y = 16; y <= 28; y++) { setPath(13, y); }
   for (let y = 25; y <= 28; y++) { setPath(8, y); }
   for (let y = 32; y <= 49; y++) { setPath(12, y); }
   for (let x = 13; x <= 17; x++) { setPath(x, 34); }
@@ -237,9 +237,9 @@ function buildVille() {
   poi(m, 'roue', 17.5, 45.4, 1.8);
   m.movers.push({ type: 'wheel', cx: 17.5, cy: 41.6, r: 1.9 });
 
-  prop(m, 'bumper', 2, 25);
-  solidRect(m, 2, 25, 6, 28);
-  poi(m, 'tamponneuses', 7.2, 26.5, 1.4);
+  prop(m, 'bumper', 14, 17);
+  solidRect(m, 14, 17, 17, 19);
+  poi(m, 'tamponneuses', 13.5, 18.5, 1.3);
 
   /* Enceinte du parc : clôture festive, portail sur la route, ouverture au sud. */
   prop(m, 'parcgate', 19, 28);
@@ -1070,28 +1070,28 @@ export function drawProp(g, p, rng) {
       break;
     }
     case 'bumper': {
-      const w = TILE * 5, h = TILE * 4;
+      const w = TILE * 4, h = TILE * 3;
       g.fillStyle = '#2c3446';
       g.fillRect(x, y, w, h);
       g.strokeStyle = '#f7d418';
       g.lineWidth = 4;
       g.strokeRect(x + 3, y + 3, w - 6, h - 6);
-      const cars = [[36, 40, '#e04444'], [90, 76, '#48dcff'], [120, 34, '#3fae6a']];
+      const cars = [[30, 34, '#e04444'], [72, 66, '#48dcff'], [98, 28, '#3fae6a']];
       for (const [cx2, cy2, col] of cars) {
         g.strokeStyle = '#8894a8';
         g.lineWidth = 2;
         g.beginPath();
-        g.moveTo(x + cx2, y + cy2); g.lineTo(x + cx2 + 8, y + cy2 - 16);
+        g.moveTo(x + cx2, y + cy2); g.lineTo(x + cx2 + 8, y + cy2 - 14);
         g.stroke();
         g.fillStyle = col;
-        ellipse(g, x + cx2, y + cy2, 13, 9);
+        ellipse(g, x + cx2, y + cy2, 12, 8);
         g.fillStyle = '#101830';
-        ellipse(g, x + cx2, y + cy2, 7, 4);
+        ellipse(g, x + cx2, y + cy2, 6, 3.5);
       }
       g.fillStyle = '#f7d418';
       g.font = 'bold 9px sans-serif';
       g.textAlign = 'center';
-      g.fillText('TAMPONNEUSES', x + w / 2, y + h + 12);
+      g.fillText('TAMPONNEUSES', x + w / 2, y - 6);
       break;
     }
     case 'droptower': {
