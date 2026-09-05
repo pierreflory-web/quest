@@ -67,7 +67,7 @@ export function initInput(actionCallback) {
     if (len < dead) {
       input.vx = 0; input.vy = 0;
     } else {
-      const norm = Math.min(1, len / RADIUS);
+      const norm = Math.min(1, len / (RADIUS * 0.55));
       input.vx = (dx / (len || 1)) * norm;
       input.vy = (dy / (len || 1)) * norm;
     }

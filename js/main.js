@@ -9,7 +9,7 @@ const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const world = buildWorld();
 
-const SPEED = 4.6;
+const SPEED = 6.2;
 const PLAYER_R = 0.32;
 const INTERACT_R = 1.5;
 
