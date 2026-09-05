@@ -209,6 +209,17 @@ export function npcDialogue(id) {
       };
     }
 
+    case 'faucon': {
+      const lines = [
+        p('Faucon', 'Bip. Tir à l’arc ! Trois flèches pour un crédit. Mes capteurs mesurent le vent au millimètre près.'),
+        p('Faucon', 'Le gros lot ? L’ours en peluche géant. Victor le gagne à chaque fois… il ne rate jamais sa cible, celui-là.'),
+      ];
+      if (hasClue('grillon')) {
+        lines.push(p('Faucon', 'Grillon voit tout, moi je ne vois que les cibles. Chacun son objectif, bip.'));
+      }
+      return { lines };
+    }
+
     case 'b12': case 'c3': case 'z9': case 'k7': {
       const nom = { b12: 'Unité B-12', c3: 'Unité C-3', z9: 'Unité Z-9', k7: 'Unité K-7' }[id];
       const phrases = [

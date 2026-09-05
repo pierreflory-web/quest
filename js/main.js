@@ -38,7 +38,10 @@ function currentTarget() {
   let bestD = INTERACT_R;
   for (const n of m.npcs) {
     const d = Math.hypot(n.x - state.x, n.y - state.y);
-    if (d < bestD) { best = { kind: 'npc', ref: n }; bestD = d; }
+    if (d < Math.max(bestD, n.r || 0) && d <= (n.r || INTERACT_R) && (!best || d < bestD)) {
+      best = { kind: 'npc', ref: n };
+      bestD = d;
+    }
   }
   for (const o of m.interactables) {
     const d = Math.hypot(o.x - state.x, o.y - state.y);

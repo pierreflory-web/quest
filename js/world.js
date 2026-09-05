@@ -197,7 +197,7 @@ function buildVille() {
 
   prop(m, 'archery', 3, 45);
   solidRect(m, 3, 45, 6, 45);
-  poi(m, 'tir', 4.5, 46.5, 2.2);
+  poi(m, 'tir', 2.8, 46.3, 1.3);
 
   prop(m, 'bunting', 2, 27, { w: 15 });
   prop(m, 'stand', 13, 40, { label: 'BARBE À PAPA', pink: true });
@@ -271,6 +271,7 @@ function buildVille() {
   npc(m, 'lila', 'Lila', 24.5, 8.5, { body: '#3fae6a', skin: '#e8b48c', hat: 'straw' });
   npc(m, 'marcus', 'Marcus', 33.5, 50.5, { body: '#8a6d4f', skin: '#d9a06e' });
   npc(m, 'grillon', 'Grillon', 16.5, 33.5, { body: '#c0c8d4', skin: '#9aa6b6', robot: true });
+  npc(m, 'faucon', 'Faucon', 4.5, 44.2, { body: '#5f8f5a', skin: '#9aa6b6', robot: true, r: 2.3 });
   npc(m, 'victor', 'Victor', 10.5, 26.5, { body: '#7c3aed', skin: '#f2c9a0', hat: 'top' });
   npc(m, 'nadia', 'Nadia', 51.5, 30.5, { body: '#e0447c', skin: '#c98d63' });
   npc(m, 'b12', 'Unité B-12', 27.5, 37.5, { body: '#c0c8d4', skin: '#9aa6b6', robot: true, wander: true });
