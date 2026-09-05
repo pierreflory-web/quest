@@ -1059,14 +1059,14 @@ export function drawProp(g, p, rng) {
         circle(g, x + 16, y + gy * TILE + 2, 4);
       }
       g.fillStyle = 'rgba(16,24,48,0.92)';
-      g.fillRect(x - 44, y + 66, 120, 22);
+      g.fillRect(x - 44, y - 30, 120, 22);
       g.strokeStyle = 'rgba(72,220,255,0.9)';
       g.lineWidth = 2;
-      g.strokeRect(x - 44, y + 66, 120, 22);
+      g.strokeRect(x - 44, y - 30, 120, 22);
       g.fillStyle = '#48dcff';
       g.font = 'bold 12px sans-serif';
       g.textAlign = 'center';
-      g.fillText('PARC DE QUEST', x + 16, y + 81);
+      g.fillText('PARC DE QUEST', x + 16, y - 15);
       break;
     }
     case 'bumper': {
