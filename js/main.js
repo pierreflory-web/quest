@@ -767,12 +767,15 @@ function drawMapInto(c2, ctx2, t) {
   ctx2.fillRect(0, 0, c2.width, c2.height);
   ctx2.drawImage(src, ox, oy, w, h);
   const dotR = Math.max(3, c2.width / 75);
+  const exR = Math.max(5, c2.width / 42);
   for (const n of m.npcs) {
     if (npcHasNews(n.id)) {
-      ctx2.fillStyle = '#f7d418';
-      ctx2.beginPath();
-      ctx2.arc(ox + n.x * TILE * scale, oy + n.y * TILE * scale, dotR, 0, Math.PI * 2);
-      ctx2.fill();
+      drawMapExclaim(ctx2, ox + n.x * TILE * scale, oy + n.y * TILE * scale, exR);
+    }
+  }
+  for (const pt of m.portals) {
+    if (mapHasNews(pt.to)) {
+      drawMapExclaim(ctx2, ox + (pt.x + 0.5) * TILE * scale, oy + (pt.y + 0.5) * TILE * scale, exR);
     }
   }
   const px2 = ox + state.x * TILE * scale;
@@ -786,6 +789,27 @@ function drawMapInto(c2, ctx2, t) {
   ctx2.beginPath();
   ctx2.arc(px2, py2, dotR, 0, Math.PI * 2);
   ctx2.fill();
+}
+
+function mapHasNews(mapId) {
+  const m = world[mapId];
+  return m ? m.npcs.some((n) => npcHasNews(n.id)) : false;
+}
+
+function drawMapExclaim(ctx2, x, y, r) {
+  ctx2.fillStyle = '#f7d418';
+  ctx2.strokeStyle = '#101830';
+  ctx2.lineWidth = Math.max(1, r / 5);
+  ctx2.beginPath();
+  ctx2.arc(x, y, r, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.stroke();
+  ctx2.fillStyle = '#101830';
+  ctx2.font = `bold ${Math.round(r * 1.5)}px sans-serif`;
+  ctx2.textAlign = 'center';
+  ctx2.textBaseline = 'middle';
+  ctx2.fillText('!', x, y + r * 0.08);
+  ctx2.textBaseline = 'alphabetic';
 }
 
 mmCanvas.addEventListener('pointerdown', (e) => {
