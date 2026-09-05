@@ -47,6 +47,25 @@ export const SUSPECTS = [
   { id: 'mercier', name: 'Directeur Mercier', role: "Patron de l'usine RoboCorp" },
 ];
 
+export const COATS = [
+  { id: 'rose', name: 'Rose', color: '#e0447c' },
+  { id: 'jaune', name: 'Jaune', color: '#e8b820' },
+  { id: 'bleu', name: 'Bleu', color: '#2f6fed' },
+  { id: 'orange', name: 'Orange', color: '#e07b39' },
+  { id: 'vert', name: 'Vert', color: '#3fae6a' },
+  { id: 'rouge', name: 'Rouge', color: '#d23434' },
+  { id: 'violet', name: 'Violet', color: '#7c3aed' },
+  { id: 'turquoise', name: 'Turquoise', color: '#2fb5b5' },
+  { id: 'blanc', name: 'Blanc', color: '#e8ecf5' },
+  { id: 'noir', name: 'Noir', color: '#23262e' },
+];
+
+export function coatColor() {
+  const id = state.coat || (state.hero === 'fille' ? 'rose' : 'bleu');
+  const c = COATS.find((v) => v.id === id);
+  return c ? c.color : '#2f6fed';
+}
+
 function p(who, text) {
   return { who, text };
 }

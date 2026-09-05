@@ -1,5 +1,5 @@
 import { state, hasClue, addClue, flag, setFlag, save, load, hasSave, reset } from './state.js';
-import { CLUES, SUSPECTS, npcDialogue, objectDialogue, accusationResult, LOCKED_DOOR_MSG, POI_CLUES, npcHasNews, newsText } from './data.js';
+import { CLUES, SUSPECTS, npcDialogue, objectDialogue, accusationResult, LOCKED_DOOR_MSG, POI_CLUES, npcHasNews, newsText, coatColor } from './data.js';
 import { TILE, buildWorld, mapCanvas, isSolid, zoneName, drawProp } from './world.js';
 import { input, initInput } from './input.js';
 import { startMusic, toggleMute, isMuted, setTheme } from './audio.js';
@@ -267,8 +267,8 @@ function draw(t) {
   ctx.drawImage(mapCanvas(m), 0, 0);
 
   const heroLook = state.hero === 'fille'
-    ? { body: '#a8325e', skin: '#f2c9a0', hat: 'detective', hair: '#b3541e', longHair: true }
-    : { body: '#2b3a67', skin: '#f2c9a0', hat: 'detective', hair: '#5a3d20' };
+    ? { body: coatColor(), skin: '#f2c9a0', hat: 'detective', hair: '#b3541e', longHair: true }
+    : { body: coatColor(), skin: '#f2c9a0', hat: 'detective', hair: '#5a3d20' };
   const actors = [...m.npcs.map((n) => ({ ...n, isNpc: true })), {
     x: state.x, y: state.y, ...heroLook, player: true,
   }];
@@ -753,7 +753,9 @@ ui.showTitle(hasSave(), () => {
     state.hero = hero;
     started = true;
     save();
-    ui.showHowto();
+    ui.showCoatPicker(() => {
+      ui.showHowto();
+    });
   });
 }, () => {
   load();

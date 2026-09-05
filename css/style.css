@@ -107,6 +107,36 @@ html, body {
 }
 #btn-action:active { background: rgba(72,220,255,.5); }
 
+#btn-coat {
+  position: fixed;
+  right: calc(env(safe-area-inset-right, 0px) + 24px);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 126px);
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 2px solid rgba(72,220,255,.6);
+  font-size: 20px;
+  background: #2f6fed;
+}
+
+#coat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.coat-swatch {
+  border-radius: 12px;
+  border: 2px solid rgba(255,255,255,.25);
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,.65);
+}
+.coat-swatch.selected {
+  border-color: #48dcff;
+  box-shadow: 0 0 10px rgba(72,220,255,.55);
+}
+
 /* ---------- Dialogue ---------- */
 #dialogue {
   position: fixed;

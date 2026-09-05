@@ -5,6 +5,7 @@ export const state = {
   x: 30.5,
   y: 33.5,
   hero: 'garcon',
+  coat: null,
   clues: [],
   flags: {},
   solved: false,
@@ -55,6 +56,7 @@ export function reset() {
   state.x = 30.5;
   state.y = 33.5;
   state.hero = 'garcon';
+  state.coat = null;
   state.clues = [];
   state.flags = {};
   state.solved = false;

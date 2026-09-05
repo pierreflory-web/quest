@@ -1,5 +1,5 @@
-import { state, reset } from './state.js';
-import { CLUES, SUSPECTS, WIN_TEXT, nextHint } from './data.js';
+import { state, reset, save } from './state.js';
+import { CLUES, SUSPECTS, WIN_TEXT, nextHint, COATS, coatColor } from './data.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -8,10 +8,11 @@ let choicesOpen = false;
 let notebookOpen = false;
 let titleOpen = true;
 let howtoOpen = false;
+let coatOpen = false;
 let toastTimer = null;
 
 export function isBusy() {
-  return !!dlg || choicesOpen || notebookOpen || titleOpen || howtoOpen;
+  return !!dlg || choicesOpen || notebookOpen || titleOpen || howtoOpen || coatOpen;
 }
 
 export function dialogueOpen() {
@@ -140,6 +141,8 @@ export function showTitle(hasSaveGame, onNew, onContinue) {
 function startHud() {
   $('hud').hidden = false;
   $('btn-action').hidden = false;
+  $('btn-coat').hidden = false;
+  refreshCoatBtn();
   updateBadge();
 }
 
@@ -153,6 +156,34 @@ export function showHeroSelect(onPick) {
   };
   $('btn-hero-fille').onclick = pick('fille');
   $('btn-hero-garcon').onclick = pick('garcon');
+}
+
+export function refreshCoatBtn() {
+  $('btn-coat').style.background = coatColor();
+}
+
+export function showCoatPicker(onDone) {
+  coatOpen = true;
+  const grid = $('coat-grid');
+  grid.innerHTML = '';
+  const current = state.coat || (state.hero === 'fille' ? 'rose' : 'bleu');
+  for (const c of COATS) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'coat-swatch' + (c.id === current ? ' selected' : '');
+    b.style.background = c.color;
+    b.textContent = c.name;
+    b.addEventListener('click', () => {
+      state.coat = c.id;
+      save();
+      coatOpen = false;
+      $('coat').hidden = true;
+      refreshCoatBtn();
+      if (onDone) { onDone(); }
+    });
+    grid.appendChild(b);
+  }
+  $('coat').hidden = false;
 }
 
 export function showHowto() {
@@ -245,6 +276,9 @@ export function setZoneName(name) {
 export function initUi() {
   $('btn-notebook').addEventListener('click', toggleNotebook);
   $('btn-close-notebook').addEventListener('click', toggleNotebook);
+  $('btn-coat').addEventListener('click', () => {
+    if (!isBusy()) { showCoatPicker(); }
+  });
   $('btn-hint').addEventListener('click', () => {
     toggleNotebook();
     showDialogue([{ who: 'Votre instinct', text: nextHint() }], null);
