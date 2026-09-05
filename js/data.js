@@ -318,6 +318,10 @@ export function objectDialogue(id) {
       return n('La pêche aux canards. Les canards en plastique tournent en rond, imperturbables. L’un d’eux vous fixe.');
     case 'comete':
       return n('« La Comète hurlante » — le manège à sensations fortes du parc. Les tickets sont rouge vif… comme celui trouvé dans l’usine.');
+    case 'chute':
+      return n('« La Chute Libre » : la nacelle grimpe leeeentement… puis tombe d’un coup. Les hurlements font partie de l’expérience.');
+    case 'roue':
+      return n('La Grande Roue de Quest. De là-haut, on voit toute la ville — et même le toit de l’usine RoboCorp, paraît-il.');
     case 'carrousel':
       return n('Le vieux carrousel du parc. Ses chevaux mécaniques hennissent un air électronique.');
     case 'tir':

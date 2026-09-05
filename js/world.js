@@ -223,8 +223,18 @@ function buildVille() {
   solidRect(m, 13, 40, 14, 40);
   poi(m, 'confiserie', 15.6, 41.0, 1.2);
   prop(m, 'pot', 2, 26); setSolid(m, 2, 26);
-  prop(m, 'pot', 17, 22); setSolid(m, 17, 22);
+  prop(m, 'pot', 2, 22); setSolid(m, 2, 22);
   prop(m, 'pot', 17, 38); setSolid(m, 17, 38);
+
+  prop(m, 'droptower', 2, 31);
+  solidRect(m, 2, 34, 3, 36);
+  poi(m, 'chute', 3, 37.4, 1.6);
+  m.movers.push({ type: 'dropcab', x0: 2, y0: 31.4 });
+
+  prop(m, 'wheelbase', 16, 18);
+  solidRect(m, 16, 22, 19, 23);
+  poi(m, 'roue', 17.5, 24.4, 1.8);
+  m.movers.push({ type: 'wheel', cx: 18, cy: 20.4, r: 1.9 });
 
   /* --- Est : centre commercial --- */
   for (let y = 18; y <= 42; y++) {
@@ -999,6 +1009,35 @@ export function drawProp(g, p, rng) {
       g.font = 'bold 7px sans-serif';
       g.textAlign = 'center';
       g.fillText('RÉOUVERTURE', x + w / 2, y + 12);
+      break;
+    }
+    case 'droptower': {
+      g.fillStyle = '#5a6480';
+      g.fillRect(x + 14, y, 6, TILE * 4.4);
+      g.fillRect(x + 44, y, 6, TILE * 4.4);
+      g.fillStyle = '#3c4457';
+      g.fillRect(x + 8, y - 12, 48, 14);
+      g.fillStyle = '#ff5d73';
+      circle(g, x + 32, y - 5, 4);
+      g.fillStyle = '#e8ecf5';
+      g.font = 'bold 8px sans-serif';
+      g.textAlign = 'center';
+      g.fillText('CHUTE LIBRE', x + 32, y + TILE * 4.4 + 24);
+      g.fillStyle = '#5a6480';
+      g.fillRect(x + 4, y + TILE * 4.4 - 4, 56, 12);
+      break;
+    }
+    case 'wheelbase': {
+      const cx = x + TILE * 2, cy = y + TILE * 2.4;
+      g.strokeStyle = '#8894a8';
+      g.lineWidth = 6;
+      g.beginPath();
+      g.moveTo(cx - 34, y + TILE * 5.4);
+      g.lineTo(cx, cy);
+      g.lineTo(cx + 34, y + TILE * 5.4);
+      g.stroke();
+      g.fillStyle = '#5a6480';
+      g.fillRect(cx - 44, y + TILE * 5.4 - 6, 88, 12);
       break;
     }
     case 'mosaic': {

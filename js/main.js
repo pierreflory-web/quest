@@ -275,6 +275,60 @@ function drawMover(mv, t) {
     ctx.globalAlpha = 0.65 + Math.sin(t * 2 + mv.ph) * 0.3;
     drawProp(ctx, { type: 'ghost', x: gx, y: gy });
     ctx.globalAlpha = 1;
+  } else if (mv.type === 'dropcab') {
+    const ph = (t * 0.22) % 1;
+    let h;
+    if (ph < 0.55) {
+      h = ph / 0.55;
+    } else if (ph < 0.7) {
+      h = 1;
+    } else if (ph < 0.78) {
+      h = 1 - (ph - 0.7) / 0.08;
+    } else {
+      h = 0;
+    }
+    const x = mv.x0 * TILE + 6;
+    const y = (mv.y0 + 3.1 * (1 - h)) * TILE;
+    ctx.fillStyle = '#f7d418';
+    ctx.fillRect(x, y, 52, 12);
+    ctx.fillStyle = '#101830';
+    for (let i = 0; i < 4; i++) {
+      ctx.beginPath();
+      ctx.arc(x + 10 + i * 11, y + 4, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  } else if (mv.type === 'wheel') {
+    const a0 = t * 0.4;
+    const cx = mv.cx * TILE;
+    const cy = mv.cy * TILE;
+    const r = mv.r * TILE;
+    ctx.strokeStyle = '#e04444';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.strokeStyle = '#c9a13f';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i < 8; i++) {
+      const a = a0 + (i * Math.PI) / 4;
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+    }
+    ctx.stroke();
+    for (let i = 0; i < 8; i++) {
+      const a = a0 + (i * Math.PI) / 4;
+      const gx = cx + Math.cos(a) * r;
+      const gy = cy + Math.sin(a) * r;
+      ctx.fillStyle = `hsl(${i * 45} 70% 55%)`;
+      ctx.beginPath();
+      ctx.roundRect(gx - 6, gy - 2, 12, 10, 3);
+      ctx.fill();
+    }
+    ctx.fillStyle = '#3c4457';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+    ctx.fill();
   } else if (mv.type === 'skeleton') {
     const sx = mv.x0 + Math.sin(t * 3 + mv.ph) * 0.14;
     const sy = mv.y0 - Math.abs(Math.sin(t * 5 + mv.ph)) * 0.12;
