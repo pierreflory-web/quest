@@ -245,6 +245,27 @@ export function npcDialogue(id) {
       };
     }
 
+    case 'moka': {
+      return {
+        lines: [
+          p('Moka', 'Bip. Bienvenue au Circuit Court ! Un expresso magnétique ? Il défie la gravité, comme nos prix.'),
+          p('Moka', 'Les habitués ne parlent que du vol… L’agent Pixel n’a même pas touché son thé ce matin. Mauvais signe. Bip.'),
+        ],
+      };
+    }
+
+    case 'balai': {
+      const lines = [
+        p('Balayette', 'Vzzz. Balayage en cours. Poussière détectée : 0,02 g/m². Inacceptable.'),
+      ];
+      if (hasClue('sable')) {
+        lines.push(p('Balayette', 'Du sable ? Parlons-en ! J’en ai aspiré des kilos devant l’usine, au petit matin. Vzzz. Personne ne me demande jamais rien, à moi.'));
+      } else {
+        lines.push(p('Balayette', 'Cette place sera impeccable. Elle l’était déjà, mais on n’est jamais trop prudent. Vzzz.'));
+      }
+      return { lines };
+    }
+
     case 'bosquet': {
       const lines = [
         p('Bosquet', 'Bip. Jardinier en chef du Grand Jardin. Trois mille deux cent quatre fleurs, et je les connais toutes par leur petit nom.'),
@@ -341,6 +362,12 @@ export function objectDialogue(id) {
       return n('Le stand de tir à l’arc. Trois flèches plantées à côté de la cible. Quelqu’un manque d’entraînement.');
     case 'ruines':
       return n('Des pans de murs effondrés, à moitié ensevelis sous le sable. Le sud de Quest a connu des jours meilleurs.');
+    case 'cafe':
+      return n('La terrasse du « Circuit Court ». Sur l’ardoise : expresso magnétique, thé à lévitation, jus de baies du grand jardin.');
+    case 'foodtruck':
+      return n('Le food-truck « Wok-È-Watt ». Spécialité : nouilles quantiques, servies dans deux états à la fois — chaudes et très chaudes.');
+    case 'horloge':
+      return n('L’horloge holographique de la place. Elle affiche l’heure exacte de Quest… qui est aussi la vôtre, comme par hasard.');
     case 'fontaine':
       return n('La fontaine de la place. L’eau y coule en spirales impossibles : technologie de Quest oblige.');
     case 'machines':
@@ -415,6 +442,17 @@ export const POI_CLUES = {
   roulettes: 'roulettes',
   bacheRobot: 'robot',
 };
+
+/** Bandeau d'actualités de l'écran géant, selon l'avancement. */
+export function newsText() {
+  if (state.solved) {
+    return 'QUEST NEWS ••• NOVA-7 RETROUVÉ : LE DÉTECTIVE DE QUEST ACCLAMÉ ••• LE FORAIN VICTOR ÉCROUÉ ••• GRANDE FÊTE AU PARC CE SOIR ••• MÉTÉO : CIEL DÉGAGÉ, 23 °C ••• ';
+  }
+  if (flag('aveux')) {
+    return 'QUEST NEWS ••• REBONDISSEMENT : DES AVEUX DANS L’AFFAIRE NOVA-7 ? ••• LA MAIRIE RETIENT SON SOUFFLE ••• MÉTÉO : CIEL DÉGAGÉ, 23 °C ••• ';
+  }
+  return 'QUEST NEWS ••• VOL À L’USINE ROBOCORP : NOVA-7 INTROUVABLE ••• LE MAIRE PROMET UNE RÉCOMPENSE ••• UN DÉTECTIVE SUR L’AFFAIRE ••• MÉTÉO : CIEL DÉGAGÉ, 23 °C ••• ';
+}
 
 /** Conseil à la demande : la prochaine étape logique de l'enquête. */
 export function nextHint() {

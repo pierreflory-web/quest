@@ -152,6 +152,34 @@ function buildVille() {
   poi(m, 'poubelle', 23.5, 37, 1.1);
   poi(m, 'poubelle', 37.5, 37, 1.1);
 
+  /* Écran géant d'informations (texte défilant animé). */
+  prop(m, 'bigscreen', 25, 38);
+  solidRect(m, 25, 38, 28, 39);
+  m.movers.push({ type: 'ticker', x: 25, y: 38, w: 4 });
+
+  /* Café-terrasse « Le Circuit Court ». */
+  prop(m, 'cafe', 37, 22);
+  solidRect(m, 37, 22, 39, 23);
+  prop(m, 'parasol', 37, 25); setSolid(m, 37, 25);
+  prop(m, 'parasol', 39, 25); setSolid(m, 39, 25);
+  poi(m, 'cafe', 38, 26.6, 1.4);
+
+  /* Horloge holographique (heure réelle). */
+  prop(m, 'clockbase', 33, 36);
+  setSolid(m, 33, 36);
+  poi(m, 'horloge', 33.5, 37.2, 1.3);
+  m.movers.push({ type: 'clock', x: 33, y: 36 });
+
+  /* Food-truck « Wok-È-Watt ». */
+  prop(m, 'foodtruck', 20, 27);
+  solidRect(m, 20, 27, 22, 28);
+  poi(m, 'foodtruck', 23.3, 28, 1.4);
+
+  m.movers.push(
+    { type: 'bird', x: 26, y: 33, hx: 26, hy: 33, mode: 'ground', mech: true },
+    { type: 'bird', x: 35, y: 37.5, hx: 35, hy: 37.5, mode: 'ground', mech: true },
+  );
+
   /* --- Nord : grand jardin --- */
   prop(m, 'swing', 10, 3); solidRect(m, 10, 3, 11, 4);
   prop(m, 'swing', 14, 3); solidRect(m, 14, 3, 15, 4);
@@ -403,6 +431,8 @@ function buildVille() {
   npc(m, 'victor', 'Victor', 10.5, 26.5, { body: '#7c3aed', skin: '#f2c9a0', hat: 'top', hair: '#241c1c' });
   npc(m, 'nadia', 'Nadia', 51.5, 30.5, { body: '#e0447c', skin: '#c98d63', hair: '#3a2a1e', longHair: true });
   npc(m, 'gustave', 'Gustave', 47.5, 32.5, { body: '#37415c', skin: '#e8b48c', hat: 'cap', hair: '#4a3826' });
+  npc(m, 'moka', 'Moka', 38.5, 24.3, { body: '#6b4a2b', skin: '#9aa6b6', robot: true, r: 2.2 });
+  npc(m, 'balai', 'Balayette', 27.5, 34.5, { sweeper: true, wander: true, sp: 1.9 });
   npc(m, 'vanille', 'Vanille', 55.5, 27.2, { body: '#e8e2d4', skin: '#9aa6b6', robot: true, r: 2.3 });
   m.movers.push(
     { type: 'drone', cx: 30, cy: 16, rx: 14, ry: 3, sp: 0.25, ph: 0 },
@@ -1081,6 +1111,91 @@ export function drawProp(g, p, rng) {
       g.font = 'bold 7px sans-serif';
       g.textAlign = 'center';
       g.fillText('RÉOUVERTURE', x + w / 2, y + 12);
+      break;
+    }
+    case 'bigscreen': {
+      const w = TILE * 4;
+      g.fillStyle = '#3c4457';
+      g.fillRect(x + 8, y + 20, 8, 24);
+      g.fillRect(x + w - 16, y + 20, 8, 24);
+      g.fillStyle = '#101830';
+      g.fillRect(x - 6, y - 26, w + 12, 48);
+      g.strokeStyle = 'rgba(72,220,255,0.85)';
+      g.lineWidth = 2;
+      g.strokeRect(x - 5, y - 25, w + 10, 46);
+      g.fillStyle = '#5a6480';
+      g.fillRect(x + 4, y + 44, w - 8, 12);
+      break;
+    }
+    case 'cafe': {
+      const w = TILE * 3;
+      g.fillStyle = '#6b4a2b';
+      g.fillRect(x + 2, y + 12, w - 4, 40);
+      for (let i = 0; i < 6; i++) {
+        g.fillStyle = i % 2 ? '#2f8f8f' : '#f5f0e6';
+        g.fillRect(x + i * (w / 6), y, w / 6, 12);
+      }
+      g.fillStyle = '#f5f0e6';
+      g.fillRect(x + 10, y + 20, w - 20, 14);
+      g.fillStyle = '#3c2a18';
+      g.font = 'bold 8px sans-serif';
+      g.textAlign = 'center';
+      g.fillText('LE CIRCUIT COURT', x + w / 2, y + 30);
+      g.fillStyle = '#e8ecf5';
+      circle(g, x + 14, y + 44, 4);
+      circle(g, x + w - 14, y + 44, 4);
+      break;
+    }
+    case 'parasol': {
+      g.fillStyle = '#8a94a8';
+      ellipse(g, x + 16, y + 22, 10, 6);
+      g.fillStyle = '#3c4457';
+      g.fillRect(x + 15, y + 2, 2, 20);
+      g.fillStyle = '#e04444';
+      g.beginPath();
+      g.moveTo(x - 2, y + 8);
+      g.quadraticCurveTo(x + 16, y - 12, x + 34, y + 8);
+      g.closePath();
+      g.fill();
+      g.fillStyle = '#f5f0e6';
+      g.beginPath();
+      g.moveTo(x + 7, y + 2.4);
+      g.quadraticCurveTo(x + 16, y - 8, x + 25, y + 2.4);
+      g.lineTo(x + 21, y + 4.5);
+      g.quadraticCurveTo(x + 16, y - 2, x + 11, y + 4.5);
+      g.closePath();
+      g.fill();
+      break;
+    }
+    case 'clockbase': {
+      g.fillStyle = '#3c4457';
+      g.fillRect(x + 13, y + 4, 6, 26);
+      g.fillStyle = '#5a6480';
+      ellipse(g, x + 16, y + 28, 11, 4);
+      break;
+    }
+    case 'foodtruck': {
+      const w = TILE * 3;
+      g.fillStyle = '#e07b39';
+      g.beginPath();
+      g.roundRect(x + 2, y + 6, w - 4, 42, 8);
+      g.fill();
+      g.fillStyle = '#f5f0e6';
+      g.fillRect(x + 10, y + 14, 34, 16);
+      g.fillStyle = '#48dcff';
+      g.fillRect(x + 12, y + 16, 30, 8);
+      g.fillStyle = '#3c2a18';
+      g.font = 'bold 8px sans-serif';
+      g.textAlign = 'center';
+      g.fillText('WOK-È-WATT', x + w / 2, y + 42);
+      g.fillStyle = '#2c2c2c';
+      circle(g, x + 14, y + 50, 6);
+      circle(g, x + w - 14, y + 50, 6);
+      g.fillStyle = '#8894a8';
+      circle(g, x + 14, y + 50, 2.5);
+      circle(g, x + w - 14, y + 50, 2.5);
+      g.fillStyle = '#f7d418';
+      g.fillRect(x + 52, y + 12, 10, 20);
       break;
     }
     case 'gpond': {

@@ -1,5 +1,5 @@
 import { state, hasClue, addClue, flag, setFlag, save, load, hasSave, reset } from './state.js';
-import { CLUES, SUSPECTS, npcDialogue, objectDialogue, accusationResult, LOCKED_DOOR_MSG, POI_CLUES, npcHasNews } from './data.js';
+import { CLUES, SUSPECTS, npcDialogue, objectDialogue, accusationResult, LOCKED_DOOR_MSG, POI_CLUES, npcHasNews, newsText } from './data.js';
 import { TILE, buildWorld, mapCanvas, isSolid, zoneName, drawProp } from './world.js';
 import { input, initInput } from './input.js';
 import { startMusic, toggleMute, isMuted, setTheme } from './audio.js';
@@ -205,8 +205,9 @@ function updateBirds(dt) {
 
 function landBird(b, m) {
   for (let i = 0; i < 20; i++) {
-    const x = 3 + Math.random() * 40;
-    const y = 1.5 + Math.random() * 14;
+    const x = b.hx + (Math.random() - 0.5) * 10;
+    const y = b.hy + (Math.random() - 0.5) * 8;
+    if (x < 1 || y < 1 || x >= m.w - 1 || y >= m.h - 1) { continue; }
     if (!isSolid(m, x, y) && Math.hypot(x - state.x, y - state.y) > 4) {
       b.x = x;
       b.y = y;
@@ -386,6 +387,8 @@ function drawMover(mv, t) {
   } else if (mv.type === 'bird') {
     const bx = mv.x * TILE;
     const by = mv.y * TILE;
+    const bodyCol = mv.mech ? '#9aa5b5' : '#8a94a8';
+    const bellyCol = mv.mech ? '#48dcff' : '#e08a5a';
     if (mv.mode === 'fly') {
       const flap = Math.sin(t * 16) > 0 ? 1 : -1;
       ctx.strokeStyle = '#5f6c82';
@@ -394,7 +397,7 @@ function drawMover(mv, t) {
       ctx.moveTo(bx - 8, by - 4 * flap); ctx.quadraticCurveTo(bx - 3, by, bx, by);
       ctx.moveTo(bx + 8, by - 4 * flap); ctx.quadraticCurveTo(bx + 3, by, bx, by);
       ctx.stroke();
-      ctx.fillStyle = '#8a94a8';
+      ctx.fillStyle = bodyCol;
       ctx.beginPath();
       ctx.ellipse(bx, by, 5, 3.5, 0, 0, Math.PI * 2);
       ctx.fill();
@@ -404,15 +407,15 @@ function drawMover(mv, t) {
       ctx.beginPath();
       ctx.ellipse(bx, by + 5, 5, 2, 0, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = '#8a94a8';
+      ctx.fillStyle = bodyCol;
       ctx.beginPath();
       ctx.ellipse(bx, by - hop, 5, 4, 0, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = '#e08a5a';
+      ctx.fillStyle = bellyCol;
       ctx.beginPath();
       ctx.ellipse(bx + 1, by + 1 - hop, 3, 2.5, 0, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = '#8a94a8';
+      ctx.fillStyle = bodyCol;
       ctx.beginPath();
       ctx.arc(bx + 4, by - 4 - hop, 3, 0, Math.PI * 2);
       ctx.fill();
@@ -420,11 +423,47 @@ function drawMover(mv, t) {
       ctx.beginPath();
       ctx.moveTo(bx + 7, by - 4 - hop); ctx.lineTo(bx + 10, by - 3.5 - hop); ctx.lineTo(bx + 7, by - 2.5 - hop);
       ctx.fill();
-      ctx.fillStyle = '#101830';
+      ctx.fillStyle = mv.mech ? '#ff5d73' : '#101830';
       ctx.beginPath();
       ctx.arc(bx + 5, by - 5 - hop, 0.9, 0, Math.PI * 2);
       ctx.fill();
     }
+  } else if (mv.type === 'ticker') {
+    const x = mv.x * TILE;
+    const y = mv.y * TILE;
+    const w = mv.w * TILE;
+    const text = newsText();
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x - 2, y - 23, w + 4, 42);
+    ctx.clip();
+    ctx.fillStyle = '#48dcff';
+    ctx.font = 'bold 13px monospace';
+    ctx.textAlign = 'left';
+    const tw = ctx.measureText(text).width;
+    const off = (t * 45) % tw;
+    ctx.fillText(text, x - off, y - 2);
+    ctx.fillText(text, x - off + tw, y - 2);
+    ctx.restore();
+    ctx.fillStyle = Math.sin(t * 4) > 0 ? '#ff5d73' : '#5a2230';
+    ctx.beginPath();
+    ctx.arc(x + w + 1, y - 19, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+  } else if (mv.type === 'clock') {
+    const x = mv.x * TILE + 16;
+    const y = mv.y * TILE - 6 + Math.sin(t * 1.5) * 2;
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const sep = now.getSeconds() % 2 ? ':' : ' ';
+    ctx.fillStyle = 'rgba(72,220,255,0.14)';
+    ctx.beginPath();
+    ctx.ellipse(x, y, 26, 13, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#48dcff';
+    ctx.font = 'bold 14px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${hh}${sep}${mm}`, x, y + 5);
   } else if (mv.type === 'squirrel') {
     const cyc = (t * 0.22 + mv.ph) % 2;
     let u;
@@ -498,6 +537,37 @@ function drawActor(a, t) {
 
   if (a.cat) {
     drawCat(x, a.y * TILE, t);
+    return;
+  }
+
+  if (a.sweeper) {
+    const sy = a.y * TILE;
+    ctx.fillStyle = 'rgba(72,220,255,0.12)';
+    ctx.beginPath();
+    ctx.ellipse(x, sy + 6, 14, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#5a6480';
+    ctx.beginPath();
+    ctx.roundRect(x - 10, sy - 8, 20, 14, 6);
+    ctx.fill();
+    ctx.fillStyle = '#48dcff';
+    ctx.fillRect(x - 6, sy - 5, 12, 3);
+    ctx.fillStyle = Math.sin(t * 6) > 0 ? '#f7d418' : '#8a6d1e';
+    ctx.beginPath();
+    ctx.arc(x, sy - 10, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#8894a8';
+    ctx.lineWidth = 2;
+    const spin = t * 10;
+    for (const sx of [-9, 9]) {
+      ctx.beginPath();
+      for (let i = 0; i < 3; i++) {
+        const a2 = spin + (i * Math.PI * 2) / 3;
+        ctx.moveTo(x + sx, sy + 5);
+        ctx.lineTo(x + sx + Math.cos(a2) * 5, sy + 5 + Math.sin(a2) * 2.5);
+      }
+      ctx.stroke();
+    }
     return;
   }
 

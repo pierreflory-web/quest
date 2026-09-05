@@ -20,7 +20,11 @@ accuse un suspect auprès de l'agent Pixel.
   autos tamponneuses, carrousel, pêche aux canards, stands de marrons chauds et
   de tir à l'arc tenus par des robots humanoïdes, et maison hantée.
 - **Est** — Le Grand Centre : grand centre commercial.
-- **Centre** — Place de l'Usine : l'usine RoboCorp, scène du crime.
+- **Centre** — Place de l'Usine : l'usine RoboCorp, scène du crime ; écran géant
+  d'informations à texte défilant (les nouvelles suivent l'enquête), horloge
+  holographique à l'heure réelle, café-terrasse « Le Circuit Court » avec Moka le
+  robot serveur, food-truck « Wok-È-Watt », Balayette le robot balayeur et des
+  pigeons mécaniques qui s'envolent à l'approche.
 
 ## Lancer le jeu
 
