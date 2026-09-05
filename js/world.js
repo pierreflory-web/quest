@@ -110,6 +110,8 @@ function buildVille() {
   /* Réseau d'allées : chaque lieu rejoint le carrefour central. */
   for (let y = 2; y <= 8; y++) { setPath(12, y); setPath(45, y); }
   for (let y = 16; y <= 28; y++) { setPath(13, y); }
+  for (let y = 9; y <= 16; y++) { setPath(17, y); }
+  for (let x = 14; x <= 16; x++) { setPath(x, 16); }
   for (let y = 25; y <= 28; y++) { setPath(8, y); }
   for (let y = 32; y <= 49; y++) { setPath(12, y); }
   for (let x = 13; x <= 17; x++) { setPath(x, 34); }
@@ -321,7 +323,7 @@ function buildVille() {
   setSolid(m, 19, 28);
   setSolid(m, 19, 32);
   const fenceTiles = [];
-  for (let x = 1; x <= 19; x++) { fenceTiles.push([x, 12]); }
+  for (let x = 1; x <= 19; x++) { if (x !== 17) { fenceTiles.push([x, 12]); } }
   for (let x = 1; x <= 19; x++) { if (x !== 12) { fenceTiles.push([x, 47]); } }
   for (let y = 13; y <= 46; y++) {
     if (y >= 28 && y <= 32) { continue; }
