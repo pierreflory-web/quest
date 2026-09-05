@@ -1118,11 +1118,6 @@ export function drawProp(g, p, rng) {
       g.fillStyle = '#3c4457';
       g.fillRect(x + 8, y + 20, 8, 24);
       g.fillRect(x + w - 16, y + 20, 8, 24);
-      g.fillStyle = '#101830';
-      g.fillRect(x - 6, y - 26, w + 12, 48);
-      g.strokeStyle = 'rgba(72,220,255,0.85)';
-      g.lineWidth = 2;
-      g.strokeRect(x - 5, y - 25, w + 10, 46);
       g.fillStyle = '#5a6480';
       g.fillRect(x + 4, y + 44, w - 8, 12);
       break;

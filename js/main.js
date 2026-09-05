@@ -442,6 +442,11 @@ function drawMover(mv, t) {
     const y = mv.y * TILE;
     const w = mv.w * TILE;
     const text = newsText();
+    ctx.fillStyle = '#101830';
+    ctx.fillRect(x - 6, y - 26, w + 12, 48);
+    ctx.strokeStyle = 'rgba(72,220,255,0.85)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x - 5, y - 25, w + 10, 46);
     ctx.save();
     ctx.beginPath();
     ctx.rect(x - 2, y - 23, w + 4, 42);
