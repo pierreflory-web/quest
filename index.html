@@ -46,7 +46,8 @@
     <div id="nb-clues"></div>
     <h3>Suspects</h3>
     <div id="nb-suspects"></div>
-    <button id="btn-close-notebook" type="button" class="btn">Fermer</button>
+    <button id="btn-close-notebook" type="button" class="btn btn-primary">Fermer</button>
+    <button id="btn-restart" type="button" class="btn btn-danger">Recommencer l'enquête</button>
   </div>
 </div>
 
@@ -62,7 +63,37 @@
   </div>
 </div>
 
+<div id="hero" class="overlay" hidden>
+  <div class="panel title-panel">
+    <h2>Qui mène l'enquête ?</h2>
+    <div class="hero-row">
+      <button id="btn-hero-fille" type="button" class="btn hero-btn">
+        <span class="hero-emoji">🕵️‍♀️</span>
+        <b>Léa</b>
+        <small>Détective au manteau grenat</small>
+      </button>
+      <button id="btn-hero-garcon" type="button" class="btn hero-btn">
+        <span class="hero-emoji">🕵️‍♂️</span>
+        <b>Théo</b>
+        <small>Détective au manteau bleu nuit</small>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="howto" class="overlay" hidden>
+  <div class="panel">
+    <h2>Comment jouer</h2>
+    <div class="howto-item">🕹️ <b>Se déplacer</b> — Posez le pouce sur la moitié gauche de l'écran et glissez : un joystick apparaît. Au clavier : flèches ou WASD.</div>
+    <div class="howto-item">💬 <b>Parler</b> — Approchez-vous d'un personnage jusqu'à voir la bulle « Parler », puis appuyez sur le bouton <b>A</b> (ou E / Espace / Entrée).</div>
+    <div class="howto-item">🔎 <b>Examiner</b> — Même chose devant un objet marqué « Examiner ». Les indices trouvés remplissent votre carnet.</div>
+    <div class="howto-item">📔 <b>Carnet</b> — Le bouton en haut à droite rassemble vos indices et la liste des suspects. Quand vous êtes sûr de vous, accusez un suspect auprès de l'agent Pixel.</div>
+    <button id="btn-howto-ok" type="button" class="btn btn-primary">C'est parti !</button>
+  </div>
+</div>
+
 <div id="win" class="overlay" hidden>
+  <canvas id="confetti"></canvas>
   <div class="panel title-panel">
     <h1>Affaire classée !</h1>
     <p class="pitch" id="win-text"></p>

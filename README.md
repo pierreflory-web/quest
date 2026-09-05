@@ -39,7 +39,15 @@ le jeu est installable comme une app (PWA) via « Ajouter à l'écran d'accueil 
   **A** pour parler / examiner.
 - **Clavier** : flèches ou ZQSD/WASD pour se déplacer, `E`, `Espace` ou `Entrée` pour agir.
 
+Au début d'une nouvelle enquête, on choisit son personnage — **Léa** ou **Théo** —
+puis une page « Comment jouer » explique les commandes. Le carnet permet de
+recommencer l'enquête à tout moment.
 La progression est sauvegardée automatiquement (localStorage).
+
+La ville est vivante : des robots humanoïdes (unités B-12, C-3, Z-9, K-7) se
+promènent dans les rues, et des dizaines d'objets sont examinables — bancs, statue
+des fondateurs, panneau « RECHERCHÉ », distributeurs, château de sable, barque
+échouée, feu de camp, caddies, vitrines garnies…
 
 ## Structure du code
 
@@ -58,9 +66,11 @@ La progression est sauvegardée automatiquement (localStorage).
 
 Le coupable est **Victor**, le forain de la maison hantée. Piste : sable au pied du
 socle → témoignage de Marcus (quartier sud) → traces de roulettes et ticket de manège
-→ témoignage de Grillon, le robot à marrons (déverrouille la maison hantée) →
-NOVA-7 caché sous une bâche achetée à Nadia. L'accusation ne réussit que si le
-robot a été retrouvé.
+→ témoignage de Grillon, le robot à marrons → facture de la bâche chez Nadia.
+Confronté aux deux preuves (témoignage + facture), **Victor avoue** et déverrouille
+la maison hantée : on ne peut donc pas trouver NOVA-7 sans avoir d'abord confondu
+le coupable. L'accusation finale ne réussit que si le robot a été retrouvé.
+Victoire couronnée de confettis.
 
 ## Pistes d'évolution
 

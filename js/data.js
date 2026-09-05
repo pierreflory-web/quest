@@ -155,16 +155,29 @@ export function npcDialogue(id) {
       if (hasClue('robot')) {
         return {
           lines: [
-            p('Victor', "D'accord, d'accord ! C'est moi. Je voulais la plus grande attraction de Quest, un vrai robot dans ma maison hantée !"),
+            p('Victor', "Vous l'avez vu, hein ? Il est magnifique… Je voulais la plus grande attraction de Quest, un vrai robot dans ma maison hantée !"),
             p('Victor', 'Il est intact, je le jure ! Je… je comptais le rendre. Un jour. Peut-être.'),
           ],
+        };
+      }
+      if (flag('aveux')) {
+        return { lines: [p('Victor', "Allez-y, entrez… Il est au fond, sous la bâche. Intact, je le jure. Soyez doux avec lui.")] };
+      }
+      if (hasClue('grillon') && hasClue('bache')) {
+        return {
+          lines: [
+            p('Victor', "L'enregistrement de Grillon ET la facture de la bâche ?… Vous ne me laissez aucune sortie."),
+            p('Victor', "D'accord, d'accord ! C'est moi qui suis entré dans l'usine. Mais je n'ai rien VOLÉ, j'ai… emprunté. Pour l'art !"),
+            p('Victor', 'Tenez, je déverrouille la maison hantée. Vous verrez par vous-même : il est intact.'),
+          ],
+          flagSet: 'aveux',
         };
       }
       if (hasClue('grillon')) {
         return {
           lines: [
             p('Victor', 'Un animatronique ! Ce robot à marrons raconte n’importe quoi, ses circuits ont pris l’humidité !'),
-            p('Victor', "Bon… la porte n'est plus verrouillée, mais il n'y a RIEN à voir là-dedans. RIEN, vous m'entendez ?"),
+            p('Victor', "Sans preuve solide, personne n'entrera chez moi. PERSONNE, vous m'entendez ?"),
           ],
         };
       }
@@ -194,6 +207,20 @@ export function npcDialogue(id) {
           p('Nadia', "Le vol de l'usine ? J'y ai travaillé, vous savez, avant d'être licenciée. Mais je passe toutes mes nuits ici, à l'inventaire. Demandez au vigile."),
         ],
       };
+    }
+
+    case 'b12': case 'c3': case 'z9': case 'k7': {
+      const nom = { b12: 'Unité B-12', c3: 'Unité C-3', z9: 'Unité Z-9', k7: 'Unité K-7' }[id];
+      const phrases = [
+        'Bip. Belle journée pour patrouiller dans Quest, non ?',
+        'Bip-bip. Mes pas sont comptés : 8 412 aujourd’hui. Un record.',
+        'Bip. NOVA-7 est notre grand frère à tous. Retrouvez-le, détective.',
+        'Bip. J’ai été assemblé à l’usine RoboCorp, comme tous les robots de la ville.',
+        'Bip. Rien à signaler dans mon secteur. Enfin… je crois.',
+        'Bip. Les humains marchent d’une drôle de façon. Sans vous vexer.',
+      ];
+      const i = (Math.floor(Date.now() / 8000) + id.length) % phrases.length;
+      return { lines: [p(nom, phrases[i])] };
     }
 
     default:
@@ -245,6 +272,28 @@ export function objectDialogue(id) {
       return n('Les chaînes d’assemblage de RoboCorp. Des bras articulés assemblent des robots humanoïdes en silence.');
     case 'vitrine':
       return n('Des vitrines du centre commercial : hologrammes de mode, gadgets lumineux et parapluies anti-drones.');
+    case 'banc':
+      return n('Un banc public fraîchement repeint. Parfait pour s’asseoir et réfléchir aux indices.');
+    case 'oiseaux':
+      return n('Une fontaine à oiseaux. Deux moineaux mécaniques s’y baignent en pépiant des notes électroniques.');
+    case 'statue':
+      return n('La statue des fondateurs de Quest : un humain et un robot, main dans la main. « Ensemble, nous avons bâti demain. »');
+    case 'affiche':
+      return n('Un panneau holographique : « RECHERCHÉ : NOVA-7. Récompense offerte par la mairie. » Le maire a l’air furieux.');
+    case 'distributeur':
+      return n('Un distributeur lumineux. Il vous propose un « Cola Quantique » à un prix indécent. Vous déclinez poliment.');
+    case 'poubelle':
+      return n('Une poubelle de tri à lévitation. Vous fouillez… rien d’intéressant. Vous vous essuyez discrètement les mains.');
+    case 'chateau':
+      return n('Un château de sable étonnamment détaillé : donjon, remparts, pont-levis. Un artiste hante le quartier sud.');
+    case 'barque':
+      return n('Une vieille barque échouée, à moitié ensevelie sous le sable. Le sud de Quest n’a pas toujours été un désert…');
+    case 'feu':
+      return n('Le campement de Marcus : un feu de camp bien entretenu et une théière cabossée. Tout est propre et ordonné.');
+    case 'caddie':
+      return n('Un caddie abandonné au milieu de l’allée. Ses roues grincent… mais pas comme celles de la caisse volée.');
+    case 'confiserie':
+      return n('Le stand de barbe à papa. Des nuages roses tournent doucement derrière la vitre. Ça sent le sucre chaud.');
     case 'fantome':
       return n('Un faux fantôme pendu au plafond. Il fait moins peur de près.');
     case 'caisse':
@@ -254,7 +303,7 @@ export function objectDialogue(id) {
   }
 }
 
-export const LOCKED_DOOR_MSG = 'La porte de la maison hantée est verrouillée. Victor la surveille de près…';
+export const LOCKED_DOOR_MSG = 'La maison hantée est verrouillée. Victor n’ouvrira que si vous le confondez avec des preuves solides…';
 
 export function accusationResult(id) {
   switch (id) {

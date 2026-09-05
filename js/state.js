@@ -4,6 +4,7 @@ export const state = {
   map: 'ville',
   x: 30.5,
   y: 33.5,
+  hero: 'garcon',
   clues: [],
   flags: {},
   solved: false,
@@ -53,6 +54,7 @@ export function reset() {
   state.map = 'ville';
   state.x = 30.5;
   state.y = 33.5;
+  state.hero = 'garcon';
   state.clues = [];
   state.flags = {};
   state.solved = false;

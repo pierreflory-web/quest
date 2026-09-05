@@ -112,6 +112,25 @@ function buildVille() {
   poi(m, 'fontaine', 25, 35, 2);
   prop(m, 'lamp', 21, 21); prop(m, 'lamp', 39, 21);
   prop(m, 'lamp', 21, 39); prop(m, 'lamp', 39, 39);
+  prop(m, 'lamp', 28, 4); prop(m, 'lamp', 32, 14);
+  prop(m, 'lamp', 28, 46); prop(m, 'lamp', 32, 56);
+  prop(m, 'lamp', 8, 32); prop(m, 'lamp', 16, 28);
+  prop(m, 'statue', 36, 34);
+  solidRect(m, 36, 34, 37, 35);
+  poi(m, 'statue', 37, 36.2, 1.8);
+  prop(m, 'billboard', 21, 23);
+  solidRect(m, 21, 23, 22, 23);
+  poi(m, 'affiche', 22, 24.2, 1.6);
+  prop(m, 'vending', 22, 32);
+  setSolid(m, 22, 32);
+  poi(m, 'distributeur', 22.5, 33.2, 1.2);
+  prop(m, 'vending', 38, 27);
+  setSolid(m, 38, 27);
+  poi(m, 'distributeur', 38.5, 28.2, 1.2);
+  prop(m, 'bin', 23, 36); setSolid(m, 23, 36);
+  prop(m, 'bin', 37, 36); setSolid(m, 37, 36);
+  poi(m, 'poubelle', 23.5, 37, 1.1);
+  poi(m, 'poubelle', 37.5, 37, 1.1);
 
   /* --- Nord : grand jardin --- */
   prop(m, 'swing', 10, 3); solidRect(m, 10, 3, 11, 4);
@@ -126,6 +145,14 @@ function buildVille() {
     }
   }
   poi(m, 'bambous', 50, 8, 2.4);
+  for (const bx of [20, 26, 34, 40]) {
+    prop(m, 'bench', bx, 7);
+    setSolid(m, bx, 7);
+    poi(m, 'banc', bx + 0.5, 8, 1.2);
+  }
+  prop(m, 'birdbath', 42, 12);
+  setSolid(m, 42, 12);
+  poi(m, 'oiseaux', 42.5, 13.4, 1.3);
   for (let i = 0; i < 55; i++) {
     const x = 2 + Math.floor(rng() * 56);
     const y = 1 + Math.floor(rng() * 16);
@@ -149,7 +176,7 @@ function buildVille() {
   solidRect(m, 4, 19, 12, 24);
   prop(m, 'hante', 4, 19, { w: 9, h: 6, door: 8 });
   setSolid(m, 8, 24, 0);
-  m.portals.push({ x: 8, y: 24, to: 'hante', tx: 8.5, ty: 9.2, lockedUnless: 'grillon' });
+  m.portals.push({ x: 8, y: 24, to: 'hante', tx: 8.5, ty: 9.2, lockedFlag: 'aveux' });
 
   for (let x = 3; x <= 16; x += 2) { prop(m, 'coaster', x, 15); }
   solidRect(m, 3, 15, 16, 15);
@@ -172,6 +199,14 @@ function buildVille() {
   solidRect(m, 3, 45, 6, 45);
   poi(m, 'tir', 4.5, 46.5, 2.2);
 
+  prop(m, 'bunting', 2, 27, { w: 15 });
+  prop(m, 'stand', 13, 40, { label: 'BARBE À PAPA', pink: true });
+  solidRect(m, 13, 40, 14, 40);
+  poi(m, 'confiserie', 14, 41.2, 1.6);
+  prop(m, 'pot', 2, 26); setSolid(m, 2, 26);
+  prop(m, 'pot', 17, 22); setSolid(m, 17, 22);
+  prop(m, 'pot', 17, 38); setSolid(m, 17, 38);
+
   /* --- Est : centre commercial --- */
   for (let y = 18; y <= 42; y++) {
     for (let x = 44; x <= 58; x++) {
@@ -188,6 +223,14 @@ function buildVille() {
     solidRect(m, sx, sy, sx + 2, sy + 1);
   }
   poi(m, 'vitrine', 49.5, 27.8, 2.2);
+  for (const [px2, py2] of [[45, 20], [57, 20], [45, 40], [57, 40]]) {
+    prop(m, 'pot', px2, py2);
+    setSolid(m, px2, py2);
+  }
+  prop(m, 'cart', 46, 24); setSolid(m, 46, 24);
+  poi(m, 'caddie', 46.5, 25.2, 1.3);
+  prop(m, 'cart', 53, 33); setSolid(m, 53, 33);
+  poi(m, 'caddie', 53.5, 34.2, 1.3);
 
   /* --- Sud : quartier des sables --- */
   for (let i = 0; i < 16; i++) {
@@ -206,6 +249,23 @@ function buildVille() {
   }
   poi(m, 'ruines', 21.5, 48.5, 2.4);
 
+  prop(m, 'sandcastle', 25, 53);
+  setSolid(m, 25, 53);
+  poi(m, 'chateau', 25.5, 54.2, 1.4);
+  prop(m, 'boat', 44, 55, { w: 3 });
+  solidRect(m, 44, 55, 46, 55);
+  poi(m, 'barque', 45.5, 56.4, 1.8);
+  prop(m, 'campfire', 35, 49);
+  setSolid(m, 35, 49);
+  poi(m, 'feu', 35.5, 50.2, 1.4);
+  for (let i = 0; i < 12; i++) {
+    const x = 2 + Math.floor(rng() * 56);
+    const y = 43 + Math.floor(rng() * 15);
+    if (getGround(m, x, y) === T.SAND && !m.solid[y * 60 + x]) {
+      prop(m, 'shell', x, y, { hue: Math.floor(rng() * 60) });
+    }
+  }
+
   /* --- Personnages --- */
   npc(m, 'pixel', 'Agent Pixel', 33.5, 31.5, { body: '#2f6fed', skin: '#f2c9a0', hat: 'cap' });
   npc(m, 'lila', 'Lila', 24.5, 8.5, { body: '#3fae6a', skin: '#e8b48c', hat: 'straw' });
@@ -213,6 +273,9 @@ function buildVille() {
   npc(m, 'grillon', 'Grillon', 16.5, 33.5, { body: '#c0c8d4', skin: '#9aa6b6', robot: true });
   npc(m, 'victor', 'Victor', 10.5, 26.5, { body: '#7c3aed', skin: '#f2c9a0', hat: 'top' });
   npc(m, 'nadia', 'Nadia', 51.5, 30.5, { body: '#e0447c', skin: '#c98d63' });
+  npc(m, 'b12', 'Unité B-12', 27.5, 37.5, { body: '#c0c8d4', skin: '#9aa6b6', robot: true, wander: true });
+  npc(m, 'c3', 'Unité C-3', 20.5, 8.5, { body: '#aab8d0', skin: '#8e9cb4', robot: true, wander: true });
+  npc(m, 'z9', 'Unité Z-9', 50.5, 27.5, { body: '#d4c8b0', skin: '#a8a090', robot: true, wander: true });
 
   return m;
 }
@@ -251,6 +314,7 @@ function buildUsine() {
 
   npc(m, 'mercier', 'Directeur Mercier', 6.5, 5.5, { body: '#37415c', skin: '#f2c9a0', hat: 'none' });
   npc(m, 'ray', 'Ray', 17.5, 9.5, { body: '#4b5563', skin: '#caa27c', hat: 'cap' });
+  npc(m, 'k7', 'Unité K-7', 14.5, 7.5, { body: '#c0c8d4', skin: '#9aa6b6', robot: true, wander: true });
 
   return m;
 }
@@ -488,21 +552,30 @@ function drawProp(g, p, rng) {
       break;
     }
     case 'stand': {
+      const awning = p.pink ? '#e04ba0' : '#e04444';
       g.fillStyle = '#8a5a30';
       g.fillRect(x + 2, y + 10, 60, 20);
-      g.fillStyle = '#e04444';
       for (let i = 0; i < 8; i++) {
-        g.fillStyle = i % 2 ? '#e04444' : '#f5f0e6';
+        g.fillStyle = i % 2 ? awning : '#f5f0e6';
         g.fillRect(x + i * 8, y, 8, 10);
       }
-      g.fillStyle = '#3c2a18';
-      circle(g, x + 32, y + 20, 7);
-      g.fillStyle = '#f08c1a';
-      circle(g, x + 32, y + 18, 4);
+      if (p.pink) {
+        g.fillStyle = '#f7b8dd';
+        circle(g, x + 32, y + 17, 7);
+        circle(g, x + 27, y + 20, 5);
+        circle(g, x + 37, y + 20, 5);
+        g.fillStyle = '#c9a13f';
+        g.fillRect(x + 31, y + 20, 2, 8);
+      } else {
+        g.fillStyle = '#3c2a18';
+        circle(g, x + 32, y + 20, 7);
+        g.fillStyle = '#f08c1a';
+        circle(g, x + 32, y + 18, 4);
+      }
       g.fillStyle = '#f5f0e6';
       g.font = 'bold 9px sans-serif';
       g.textAlign = 'center';
-      g.fillText('MARRONS', x + 32, y + 39);
+      g.fillText(p.label || 'MARRONS', x + 32, y + 39);
       break;
     }
     case 'archery': {
@@ -533,8 +606,21 @@ function drawProp(g, p, rng) {
       g.fillRect(x, y + 8, TILE * 3, TILE * 2 - 8);
       g.fillStyle = `hsl(${p.hue} 55% 40%)`;
       g.fillRect(x, y, TILE * 3, 10);
-      g.fillStyle = 'rgba(255,255,255,0.75)';
-      g.fillRect(x + 8, y + 18, TILE * 3 - 16, 14);
+      g.fillStyle = 'rgba(255,255,255,0.85)';
+      g.fillRect(x + 8, y + 18, TILE * 3 - 16, 22);
+      g.fillStyle = 'rgba(0,0,0,0.15)';
+      g.fillRect(x + 8, y + 30, TILE * 3 - 16, 2);
+      for (let i = 0; i < 4; i++) {
+        const ih = (p.hue + 70 + i * 65) % 360;
+        g.fillStyle = `hsl(${ih} 70% 55%)`;
+        if (i % 2 === 0) {
+          circle(g, x + 17 + i * 17, y + 26, 4.5);
+        } else {
+          g.fillRect(x + 13 + i * 17, y + 21, 8, 9);
+        }
+        g.fillStyle = `hsl(${(ih + 40) % 360} 70% 50%)`;
+        circle(g, x + 17 + i * 17, y + 36, 3.5);
+      }
       break;
     }
     case 'mallwalls': {
@@ -726,6 +812,207 @@ function drawProp(g, p, rng) {
       g.fillStyle = '#241c38';
       circle(g, x + 14, y + 6, 1.6);
       circle(g, x + 18, y + 6, 1.6);
+      break;
+    }
+    case 'bench': {
+      g.fillStyle = '#8a5a30';
+      g.fillRect(x + 2, y + 6, 28, 5);
+      g.fillRect(x + 2, y + 14, 28, 7);
+      g.fillStyle = '#6b4523';
+      g.fillRect(x + 4, y + 21, 4, 8);
+      g.fillRect(x + 24, y + 21, 4, 8);
+      break;
+    }
+    case 'birdbath': {
+      g.fillStyle = '#9aa5b5';
+      g.fillRect(x + 13, y + 12, 6, 16);
+      g.fillStyle = '#c3ccd9';
+      ellipse(g, x + 16, y + 10, 13, 6);
+      g.fillStyle = '#3ba7d9';
+      ellipse(g, x + 16, y + 10, 9, 4);
+      g.fillStyle = '#8a6d4f';
+      circle(g, x + 12, y + 8, 2.5);
+      circle(g, x + 21, y + 9, 2.5);
+      break;
+    }
+    case 'statue': {
+      g.fillStyle = '#7f8a9c';
+      g.fillRect(x + 4, y + 34, 56, 26);
+      g.fillStyle = '#98a3b5';
+      g.fillRect(x + 8, y + 30, 48, 8);
+      g.fillStyle = '#8f7a52';
+      circle(g, x + 22, y + 8, 7);
+      g.fillRect(x + 16, y + 14, 12, 22);
+      g.fillStyle = '#a08a5e';
+      g.fillRect(x + 38, y + 2, 12, 12);
+      g.fillRect(x + 37, y + 16, 14, 20);
+      g.fillStyle = '#8f7a52';
+      g.fillRect(x + 27, y + 22, 11, 4);
+      break;
+    }
+    case 'billboard': {
+      g.fillStyle = '#3c4457';
+      g.fillRect(x + 6, y + 14, 4, 18);
+      g.fillRect(x + 54, y + 14, 4, 18);
+      g.fillStyle = '#101830';
+      g.fillRect(x, y - 8, 64, 24);
+      g.strokeStyle = 'rgba(72,220,255,0.9)';
+      g.lineWidth = 2;
+      g.strokeRect(x + 1, y - 7, 62, 22);
+      g.fillStyle = '#48dcff';
+      g.font = 'bold 10px sans-serif';
+      g.textAlign = 'center';
+      g.fillText('RECHERCHÉ', x + 32, y + 1);
+      g.fillText('NOVA-7', x + 32, y + 12);
+      break;
+    }
+    case 'vending': {
+      g.fillStyle = '#1e3a5c';
+      g.fillRect(x + 4, y - 14, 24, 44);
+      g.fillStyle = 'rgba(72,220,255,0.35)';
+      g.fillRect(x + 7, y - 10, 18, 26);
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 2; j++) {
+          g.fillStyle = ['#ff5d73', '#f7d418', '#48dcff'][(i + j) % 3];
+          g.fillRect(x + 9 + j * 9, y - 7 + i * 8, 7, 5);
+        }
+      }
+      g.fillStyle = '#f7d418';
+      g.fillRect(x + 7, y + 20, 18, 4);
+      break;
+    }
+    case 'bin': {
+      g.fillStyle = '#3e7d4d';
+      g.fillRect(x + 8, y + 8, 16, 20);
+      g.fillStyle = '#2f6039';
+      g.fillRect(x + 6, y + 4, 20, 6);
+      g.fillStyle = 'rgba(72,220,255,0.5)';
+      g.fillRect(x + 8, y + 30, 16, 2);
+      break;
+    }
+    case 'sandcastle': {
+      g.fillStyle = '#d8b96a';
+      g.fillRect(x + 4, y + 14, 10, 14);
+      g.fillRect(x + 18, y + 14, 10, 14);
+      g.fillRect(x + 9, y + 18, 14, 10);
+      g.fillStyle = '#c6a755';
+      for (const tx of [4, 18]) {
+        g.fillRect(x + tx, y + 10, 3, 4);
+        g.fillRect(x + tx + 7, y + 10, 3, 4);
+      }
+      g.strokeStyle = '#e04444';
+      g.lineWidth = 1.5;
+      g.beginPath();
+      g.moveTo(x + 9, y + 14); g.lineTo(x + 9, y + 4);
+      g.stroke();
+      g.fillStyle = '#e04444';
+      g.beginPath();
+      g.moveTo(x + 9, y + 4); g.lineTo(x + 16, y + 7); g.lineTo(x + 9, y + 10);
+      g.closePath();
+      g.fill();
+      break;
+    }
+    case 'shell': {
+      g.fillStyle = `hsl(${p.hue + 10} 50% 82%)`;
+      g.beginPath();
+      g.arc(x + 14, y + 16, 5, Math.PI, 0);
+      g.fill();
+      g.strokeStyle = `hsl(${p.hue + 10} 40% 60%)`;
+      g.lineWidth = 1;
+      g.beginPath();
+      g.moveTo(x + 14, y + 16); g.lineTo(x + 11, y + 12);
+      g.moveTo(x + 14, y + 16); g.lineTo(x + 14, y + 11);
+      g.moveTo(x + 14, y + 16); g.lineTo(x + 17, y + 12);
+      g.stroke();
+      break;
+    }
+    case 'boat': {
+      const w = (p.w || 3) * TILE;
+      g.fillStyle = '#7c5a2e';
+      g.beginPath();
+      g.moveTo(x + 4, y + 8);
+      g.quadraticCurveTo(x + w / 2, y + 34, x + w - 4, y + 8);
+      g.lineTo(x + w - 12, y + 16);
+      g.lineTo(x + 12, y + 16);
+      g.closePath();
+      g.fill();
+      g.strokeStyle = '#5f4423';
+      g.lineWidth = 2;
+      g.beginPath();
+      g.moveTo(x + 10, y + 14); g.quadraticCurveTo(x + w / 2, y + 30, x + w - 10, y + 14);
+      g.stroke();
+      g.fillStyle = 'rgba(226,205,145,0.85)';
+      ellipse(g, x + w * 0.7, y + 24, w * 0.3, 7);
+      break;
+    }
+    case 'campfire': {
+      g.fillStyle = '#6f6a5e';
+      for (let i = 0; i < 6; i++) {
+        const a = (i / 6) * Math.PI * 2;
+        circle(g, x + 16 + Math.cos(a) * 11, y + 18 + Math.sin(a) * 7, 3.5);
+      }
+      g.fillStyle = '#6b4a2b';
+      g.fillRect(x + 8, y + 16, 16, 4);
+      g.fillStyle = '#f08c1a';
+      g.beginPath();
+      g.moveTo(x + 10, y + 16);
+      g.quadraticCurveTo(x + 16, y - 2, x + 22, y + 16);
+      g.closePath();
+      g.fill();
+      g.fillStyle = '#f7d418';
+      g.beginPath();
+      g.moveTo(x + 13, y + 16);
+      g.quadraticCurveTo(x + 16, y + 5, x + 19, y + 16);
+      g.closePath();
+      g.fill();
+      break;
+    }
+    case 'pot': {
+      g.fillStyle = '#b06a3c';
+      g.fillRect(x + 8, y + 16, 16, 12);
+      g.fillRect(x + 6, y + 14, 20, 4);
+      g.fillStyle = '#3c9448';
+      circle(g, x + 16, y + 8, 9);
+      circle(g, x + 10, y + 12, 6);
+      circle(g, x + 22, y + 12, 6);
+      break;
+    }
+    case 'cart': {
+      g.strokeStyle = '#8a94a8';
+      g.lineWidth = 2;
+      g.strokeRect(x + 6, y + 6, 20, 14);
+      g.beginPath();
+      for (let i = 1; i < 4; i++) {
+        g.moveTo(x + 6 + i * 5, y + 6); g.lineTo(x + 6 + i * 5, y + 20);
+      }
+      g.moveTo(x + 6, y + 13); g.lineTo(x + 26, y + 13);
+      g.stroke();
+      g.fillStyle = '#2c2c2c';
+      circle(g, x + 10, y + 24, 3);
+      circle(g, x + 22, y + 24, 3);
+      g.strokeStyle = '#e04444';
+      g.beginPath();
+      g.moveTo(x + 26, y + 6); g.lineTo(x + 30, y + 2);
+      g.stroke();
+      break;
+    }
+    case 'bunting': {
+      const w = (p.w || 4) * TILE;
+      g.strokeStyle = '#e8ecf5';
+      g.lineWidth = 1.5;
+      g.beginPath();
+      g.moveTo(x, y + 6);
+      g.quadraticCurveTo(x + w / 2, y + 16, x + w, y + 6);
+      g.stroke();
+      for (let i = 0; i < 12; i++) {
+        const fx = x + (i + 0.5) * (w / 12);
+        const fy = y + 6 + Math.sin((i + 0.5) / 12 * Math.PI) * 9;
+        g.fillStyle = `hsl(${i * 55 % 360} 75% 60%)`;
+        g.beginPath();
+        g.moveTo(fx - 4, fy); g.lineTo(fx + 4, fy); g.lineTo(fx, fy + 8);
+        g.closePath();
+        g.fill();
+      }
       break;
     }
     default:

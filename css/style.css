@@ -165,9 +165,41 @@ html, body {
 }
 .btn:active { background: rgba(72,220,255,.3); }
 .btn-primary { background: rgba(72,220,255,.28); font-weight: 700; }
+.btn-danger { border-color: rgba(255,93,115,.55); background: rgba(255,93,115,.1); }
+.btn-danger:active { background: rgba(255,93,115,.3); }
 
 .choice-btn { text-align: left; }
 .choice-btn small { display: block; color: #9fb4d8; font-size: 12px; margin-top: 2px; }
+
+.hero-row {
+  display: flex;
+  gap: 12px;
+}
+.hero-btn {
+  flex: 1;
+  padding: 18px 8px;
+  text-align: center;
+}
+.hero-emoji { display: block; font-size: 44px; margin-bottom: 8px; }
+.hero-btn b { display: block; font-size: 18px; margin-bottom: 4px; }
+.hero-btn small { color: #9fb4d8; font-size: 12px; line-height: 1.3; display: block; }
+
+.howto-item {
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  color: #cdd8ee;
+}
+.howto-item b { color: #e8ecf5; }
+
+#confetti {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+#win .panel { position: relative; }
 
 .nb-item {
   background: rgba(255,255,255,.05);

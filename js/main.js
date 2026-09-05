@@ -1,4 +1,4 @@
-import { state, hasClue, addClue, setFlag, save, load, hasSave, reset } from './state.js';
+import { state, hasClue, addClue, flag, setFlag, save, load, hasSave, reset } from './state.js';
 import { CLUES, SUSPECTS, npcDialogue, objectDialogue, accusationResult, LOCKED_DOOR_MSG } from './data.js';
 import { TILE, buildWorld, mapCanvas, isSolid, zoneName } from './world.js';
 import { input, initInput } from './input.js';
@@ -130,7 +130,7 @@ function checkPortals() {
     return;
   }
   if (!leftPortal) { return; }
-  if (pt.lockedUnless && !hasClue(pt.lockedUnless)) {
+  if (pt.lockedFlag && !flag(pt.lockedFlag)) {
     const now = performance.now();
     if (now - lastLockToast > 1800) {
       ui.toast(LOCKED_DOOR_MSG);
@@ -146,11 +146,44 @@ function checkPortals() {
   save();
 }
 
+function updateWanderers(dt) {
+  const m = currentMap();
+  for (const n of m.npcs) {
+    if (!n.wander) { continue; }
+    if (!n.home) { n.home = { x: n.x, y: n.y }; }
+    n.timer = (n.timer ?? 0) - dt;
+    if (n.timer <= 0) {
+      n.timer = 1.5 + Math.random() * 2.5;
+      if (Math.hypot(n.x - n.home.x, n.y - n.home.y) > 4) {
+        const dx = n.home.x - n.x;
+        const dy = n.home.y - n.y;
+        const l = Math.hypot(dx, dy) || 1;
+        n.vx = dx / l;
+        n.vy = dy / l;
+      } else if (Math.random() < 0.35) {
+        n.vx = 0;
+        n.vy = 0;
+      } else {
+        const a = Math.random() * Math.PI * 2;
+        n.vx = Math.cos(a);
+        n.vy = Math.sin(a);
+      }
+    }
+    if (!n.vx && !n.vy) { continue; }
+    const sp = 1.5;
+    const nx = n.x + n.vx * sp * dt;
+    const ny = n.y + n.vy * sp * dt;
+    if (canStand(m, nx, n.y)) { n.x = nx; } else { n.vx = -n.vx; }
+    if (canStand(m, n.x, ny)) { n.y = ny; } else { n.vy = -n.vy; }
+  }
+}
+
 let saveTimer = 0;
 
 function update(dt) {
   if (!started || ui.isBusy()) { return; }
   tryMove(dt);
+  updateWanderers(dt);
   checkPortals();
   saveTimer += dt;
   if (saveTimer > 4) {
@@ -190,8 +223,11 @@ function draw(t) {
   ctx.imageSmoothingEnabled = false;
   ctx.drawImage(mapCanvas(m), 0, 0);
 
+  const heroLook = state.hero === 'fille'
+    ? { body: '#a8325e', skin: '#f2c9a0', hat: 'detective', hair: '#b3541e' }
+    : { body: '#2b3a67', skin: '#f2c9a0', hat: 'detective' };
   const actors = [...m.npcs.map((n) => ({ ...n, isNpc: true })), {
-    x: state.x, y: state.y, body: '#2b3a67', skin: '#f2c9a0', hat: 'detective', player: true,
+    x: state.x, y: state.y, ...heroLook, player: true,
   }];
   actors.sort((a, b) => a.y - b.y);
   for (const a of actors) { drawActor(a, t); }
@@ -220,10 +256,25 @@ function drawActor(a, t) {
   ctx.roundRect(x - 8, y - 6, 16, 18, 6);
   ctx.fill();
 
+  if (a.hair) {
+    ctx.fillStyle = a.hair;
+    ctx.beginPath();
+    ctx.ellipse(x - 8, y - 8, 3.5, 8, 0.2, 0, Math.PI * 2);
+    ctx.ellipse(x + 8, y - 8, 3.5, 8, -0.2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
   ctx.fillStyle = a.skin;
   ctx.beginPath();
   ctx.arc(x, y - 12, 8, 0, Math.PI * 2);
   ctx.fill();
+
+  if (a.hair) {
+    ctx.fillStyle = a.hair;
+    ctx.beginPath();
+    ctx.arc(x, y - 14, 8, Math.PI * 1.05, Math.PI * 1.95);
+    ctx.fill();
+  }
 
   if (a.robot) {
     ctx.fillStyle = '#1e2536';
@@ -309,8 +360,12 @@ initInput(onAction);
 
 ui.showTitle(hasSave(), () => {
   reset();
-  started = true;
-  save();
+  ui.showHeroSelect((hero) => {
+    state.hero = hero;
+    started = true;
+    save();
+    ui.showHowto();
+  });
 }, () => {
   load();
   started = true;
@@ -323,6 +378,7 @@ requestAnimationFrame(frame);
    même quand l'onglet est masqué (requestAnimationFrame suspendu). */
 window.__quest = {
   state,
+  world,
   action: onAction,
   target: currentTarget,
   warp(map, x, y) {
