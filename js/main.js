@@ -98,11 +98,21 @@ function resolveAccusation(id) {
   if (res.win) {
     state.solved = true;
     save();
+    if (window.MesJeux) {
+      const lignes = [[50, 'Victoire : NOVA-7 retrouvé !']];
+      if (!(state.accusations || 0)) { lignes.push([20, 'Coupable trouvé du premier coup']); }
+      if (state.clues.length === Object.keys(CLUES).length) { lignes.push([10, 'Tous les indices découverts']); }
+      window.MesJeux.award('quest', lignes);
+    }
     ui.showWin(() => {
       reset();
       location.reload();
     });
     return;
+  }
+  if (state.clues.length >= 3) {
+    state.accusations = (state.accusations || 0) + 1;
+    save();
   }
   runDialogue(res);
 }

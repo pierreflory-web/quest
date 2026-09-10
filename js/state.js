@@ -8,6 +8,7 @@ export const state = {
   coat: null,
   clues: [],
   flags: {},
+  accusations: 0,
   solved: false,
 };
 
@@ -59,5 +60,6 @@ export function reset() {
   state.coat = null;
   state.clues = [];
   state.flags = {};
+  state.accusations = 0;
   state.solved = false;
 }
