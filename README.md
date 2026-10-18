@@ -81,13 +81,56 @@ examinés, et la bulle d'action affiche « Indice ! » devant eux.
 | Fichier | Rôle |
 |---|---|
 | `index.html` | Page unique, overlays d'interface (dialogue, carnet, accusation…) |
-| `js/main.js` | Boucle de jeu, caméra, collisions, portails, interactions |
+| `css/style.css` | Styles de l'interface |
+| `js/main.js` | Boucle de jeu, caméra, collisions, portails, marqueurs, mini-carte, interactions, hook de debug `window.__quest` |
 | `js/world.js` | Génération des cartes (ville, usine, maison hantée) et rendu canvas |
-| `js/data.js` | Scénario : indices, suspects, dialogues, résolution de l'accusation |
+| `js/data.js` | Scénario : indices, suspects, dialogues, conseils, résolution de l'accusation, actualités, couleurs de manteau |
 | `js/state.js` | État de la partie + sauvegarde localStorage |
 | `js/input.js` | Joystick tactile + clavier |
 | `js/ui.js` | Overlays DOM (dialogues, carnet, choix, toasts, écrans) |
-| `sw.js`, `manifest.webmanifest` | PWA (cache hors-ligne, installation) |
+| `js/audio.js` | Musique d'ambiance procédurale (Web Audio) |
+| `sw.js`, `manifest.webmanifest`, `icons/` | PWA (cache hors-ligne, installation, icônes 192/512 px) |
+
+## Publication
+
+Le jeu est publié sur GitHub Pages : <https://pierreflory-web.github.io/quest/>.
+Un `git push` sur `master` redéploie le site en une minute environ.
+
+**À chaque publication, incrémenter la constante `CACHE` dans `sw.js`**
+(actuellement `quest-v4`). Le service worker répond d'abord depuis le cache : sans
+changement de version, les joueurs déjà passés gardent l'ancienne version hors ligne.
+
+Autres pièges connus :
+
+- **iOS fige l'icône** à l'installation du raccourci : pour la changer, supprimer puis
+  réinstaller « Sur l'écran d'accueil ».
+- **Onglet masqué** : `requestAnimationFrame` est suspendu, le jeu semble figé.
+
+## Tests et débogage
+
+Il n'existe pas de suite de tests automatisée. Les vérifications se font en rejouant
+des scripts dans la console du navigateur grâce au hook `window.__quest` :
+`warp(carte, x, y)`, `tick()`, `action()`, `state`, `world`. Il permet de piloter la
+simulation image par image et de scripter un parcours complet de l'enquête.
+Ce hook est livré en production (inoffensif, mais visible en console).
+
+La vitesse de marche est la constante `SPEED` de `js/main.js` (6,2 cases/s).
+
+## Intégration « Mes Jeux »
+
+`index.html` charge un script externe, `https://pierreflory-web.github.io/jeux/points.js`,
+qui expose `window.MesJeux`. À la victoire, `js/main.js` appelle
+`window.MesJeux.award('quest', lignes)` avec :
+
+| Points | Condition |
+|---|---|
+| 50 | Victoire : NOVA-7 retrouvé |
+| 20 | Coupable trouvé du premier coup (aucune fausse accusation) |
+| 10 | Tous les indices découverts |
+
+Le compteur `state.accusations` (dans `js/state.js`) compte les fausses accusations,
+uniquement à partir de 3 indices collectés. Si `points.js` est indisponible, le jeu
+fonctionne normalement : l'appel est protégé par `if (window.MesJeux)`.
 
 ## Le scénario (spoiler !)
 
@@ -101,7 +144,10 @@ Victoire couronnée de confettis.
 
 ## Pistes d'évolution
 
-- Sons et musique d'ambiance.
+Déjà réalisé : musique d'ambiance, mini-carte, conseils (« Un conseil ? » dans le carnet).
+
+- Bruitages (la musique existe, pas encore les effets sonores).
 - Plusieurs affaires / chapitres.
 - Sprites dessinés (remplacer le rendu vectoriel canvas).
-- Minicarte et journal de quêtes.
+- Une animation ou un ajout pour la place principale (idée évoquée, à préciser).
+- Suite de tests automatisée.
