@@ -1,4 +1,4 @@
-const CACHE = 'quest-v4';
+const CACHE = 'quest-v5';
 const ASSETS = [
   '.',
   'index.html',
@@ -30,6 +30,18 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') { return; }
+  // Script « Mes Jeux » (points, badges) : réseau d'abord, pour ne jamais rester
+  // sur une vieille copie ; le cache ne sert que hors ligne.
+  if (new URL(e.request.url).pathname.endsWith('/jeux/points.js')) {
+    e.respondWith(
+      fetch(e.request).then((res) => {
+        const copy = res.clone();
+        caches.open(CACHE).then((c) => c.put(e.request, copy));
+        return res;
+      }).catch(() => caches.match(e.request))
+    );
+    return;
+  }
   e.respondWith(
     caches.match(e.request).then((hit) => hit
       || fetch(e.request).then((res) => {

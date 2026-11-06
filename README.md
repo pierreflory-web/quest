@@ -97,7 +97,7 @@ Le jeu est publié sur GitHub Pages : <https://pierreflory-web.github.io/quest/>
 Un `git push` sur `master` redéploie le site en une minute environ.
 
 **À chaque publication, incrémenter la constante `CACHE` dans `sw.js`**
-(actuellement `quest-v4`). Le service worker répond d'abord depuis le cache : sans
+(actuellement `quest-v5`). Le service worker répond d'abord depuis le cache : sans
 changement de version, les joueurs déjà passés gardent l'ancienne version hors ligne.
 
 Autres pièges connus :
